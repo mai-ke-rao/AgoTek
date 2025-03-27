@@ -6,18 +6,14 @@ import {
 } from 'react-router-dom'
 import NavBar from './components/NavBar'
 import Pocetna from './components/Pocetna'
+import Parcele from './components/Parcele'
+import './index.css'
 
 const Home = () => (
   <div> <h2>TKTL notes app</h2> </div>
 )
 
-const Notes = () => (
-  <div> <h2>Notes</h2> </div>
-)
-
-const Users = () => (
-  <div> <h2>Users</h2> </div>
-)
+const [user, setUser] = useState(null)
 
 const App = () => {
   
@@ -27,13 +23,15 @@ const App = () => {
   }
 
   return (
-    <div>
+    <div className='loader-container'>
        
       <Router>
+
       <NavBar/>
          <Routes>
-                  <Route path="/" element={<Pocetna />} />
-                  <Route path="/users" element={<Users />} />
+                  <Route path="/login" element={<Login user={user} setUser={setUser}/>}/>
+                  <Route path="/" element={user ? <Pocetna /> : <Navigate replace to='/login'/>} />
+                  <Route path="/parcele" element={<Parcele />} />
                   <Route path="/notes" element={<Home />} />
                 </Routes>
           

@@ -7,7 +7,10 @@ import dashboardIcon from '../assets/Dashboard.png'
 import meteoIcon from '../assets/Meteo.png'
 import parceleIcon from '../assets/Parcele.png'
 import aktivnostIcon from '../assets/Aktivnost.svg'
-
+import {
+    BrowserRouter as Router,
+    Routes, Route, Link
+  } from 'react-router-dom'
 
 const Pocetna = () => {
 
@@ -28,7 +31,7 @@ const Pocetna = () => {
                 </div>
 
 
-
+            
                 <div className='widget'>
                 <img src={meteoIcon}></img>
                 <div>
@@ -39,7 +42,7 @@ const Pocetna = () => {
 
                 </div>
 
-
+                <Link to='/parcele' className='no-link-style'>
                 <div className='widget'>
                 <img src={parceleIcon}></img>
                 <div>
@@ -51,7 +54,7 @@ const Pocetna = () => {
                 </div>
 
                 </div>
-
+                </Link>
 
                 <div className='widget'>
                 <img src={analizaIcon}></img>

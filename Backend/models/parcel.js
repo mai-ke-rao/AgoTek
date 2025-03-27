@@ -2,7 +2,8 @@ const mongoose = require('mongoose')
 
 const parcelSchema = new mongoose.Schema({
     name: String,
-    city: String,
+    vrsta_useva: String,
+    povrsina: Number,
     user: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}]
 })
 

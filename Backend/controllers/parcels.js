@@ -18,17 +18,15 @@ var body = request.body
 const user = request.user
 const parcel = new Parcel({
     name: body.name,
-    city: body.city,
+    vrsta_useva: body.vrsta_useva,
+    povrsina: body.povrsina,
     user: user.id
 })
 if(Object.is(undefined, parcel.name)){
     response.status(400).end()}
     else{
 
-if(Object.is(undefined, parcel.city))
-{
-    parcel.city = "Novi sad"
-}
+
 
 const result = await parcel.save()
 

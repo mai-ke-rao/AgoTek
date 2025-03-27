@@ -44,13 +44,13 @@ const demo = {
   
   <Link to="/">Početna</Link>
 
-  <Link to="/notes">Pomoć</Link>
+  <Link to="/">Pomoć</Link>
         
-  <Link to="/users"><img src={nBell} className='white-filter'/> </Link>
+  <Link to="/"><img src={nBell} className='white-filter'/> </Link>
 
-  <Link to="/users"><img src={mIcon} className='white-filter'/> </Link>
+  <Link to="/"><img src={mIcon} className='white-filter'/> </Link>
 
-  <Link to="/users" ><img src={pIcon}   className='white-filter' style={padding}/>  Aleksandar Tomic <br></br> Plac: Dedina njiva </Link>
+  <Link to="/" ><img src={pIcon}   className='white-filter' style={padding}/>  Aleksandar Tomic <br></br> Plac: Dedina njiva </Link>
   </div>
   </div>
 </nav>
