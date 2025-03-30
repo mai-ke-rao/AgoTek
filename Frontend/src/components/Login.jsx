@@ -27,7 +27,7 @@ const Login = ({user, setUser}) => {
             parcelService.setToken(user.token)
             setUsername('')
             setPassword('')
-            navigate('/')
+            navigate('/parcele')
           } catch (exception) {
             console.log(exception)
             setErrorMessage('Wrong credentials')

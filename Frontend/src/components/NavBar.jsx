@@ -15,8 +15,21 @@ import pIcon from "../assets/picpeople.png"
 
 
 
-const Navbar = ({user}) => {
+const Navbar = ({user, parcels, chosenParcId}) => {
 
+
+const pickedParc = () => {
+
+  console.log("NavBar rerender");
+  
+  const chosen = parcels.find(parc => parc.id == chosenParcId)
+  console.log("Chosen", chosen);
+  
+  return  chosen ? chosen.name : ""
+
+
+}
+ 
 const demo = {
   height: 1500
 }
@@ -50,7 +63,7 @@ const demo = {
 
   <Link to="/"><img src={mIcon} className='white-filter'/> </Link>
 
-  <Link to="/" ><img src={pIcon}   className='white-filter' style={padding}/>  {user ? user.username: ""} <br></br> Plac: Dedina njiva </Link>
+  <Link to="/" ><img src={pIcon}   className='white-filter' style={padding}/> Ime: {user ? user.username: ""} <br></br> Plac: {pickedParc()} </Link>
   </div>
   </div>
 </nav>

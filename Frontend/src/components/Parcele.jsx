@@ -3,12 +3,14 @@ import emptyImage from '../assets/placeholder.png'
 import './Parcele.css'
 import { useEffect, useState } from 'react'
 import parcelService from '../services/parcels'
+import {
+    Link
+ } from 'react-router-dom'
+
+const Parcele = ({parcels, setParcels, setChosenParcId}) => {
 
 
-const Parcele = () => {
-
-
-    const [parcels, setParcels] = useState([])
+    
 
  useEffect(() => {
     parcelService.getAll().then(returnedParcels => 
@@ -16,6 +18,16 @@ const Parcele = () => {
     )
 
  }, [])
+
+ const choiceHandler = (parcId) => {
+
+    window.localStorage.setItem(
+        'chosenParcelId', JSON.stringify(parcId)
+      )
+      setChosenParcId(JSON.parse(window.localStorage.getItem('chosenParcelId')))
+      //This is workaround to rerender the navbar, because I did not save chosen parc id 
+
+ }
 
 
 
@@ -28,8 +40,8 @@ const Parcele = () => {
             <div className='widget-page'>
             {parcels.map(parc =>
                             
-
-                            <div className='content-widget-section' key={parc.id}>
+                        <Link to='/' key={parc.id} onClick={() => choiceHandler(parc.id)}>
+                            <div className='content-widget-section'>
                                 <div className='widget-section'>
                                     <div className='widget-widget-section'>
                                         <div className='widget-title-widget-section'>
@@ -53,6 +65,7 @@ const Parcele = () => {
                                     </div>
                                 </div>
                             </div>
+                            </Link>
                           
                        
              )}

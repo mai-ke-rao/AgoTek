@@ -19,6 +19,10 @@ const Home = () => (
 
 const App = () => {
   const [user, setUser] = useState(null)
+
+
+  const [parcels, setParcels] = useState([])
+  const [chosenParcId, setChosenParcId] = useState(null)
   
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedFarmAppUser')
@@ -36,11 +40,11 @@ const App = () => {
        
       <Router>
 
-      <NavBar user={user}/>
+      <NavBar user={user} parcels={parcels} chosenParcId={chosenParcId}/>
          <Routes>
                   <Route path="/login" element={<Login setUser={setUser}/>}/>
                   <Route path="/" element={user ? <Pocetna /> : <Navigate replace to='/login'/>} />
-                  <Route path="/parcele" element={<Parcele />} />
+                  <Route path="/parcele" element={<Parcele parcels={parcels} setParcels={setParcels} setChosenParcId={setChosenParcId}/>} />
                   <Route path="/notes" element={<Home />} />
                 </Routes>
           
