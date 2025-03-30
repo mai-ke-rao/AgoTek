@@ -15,7 +15,7 @@ import pIcon from "../assets/picpeople.png"
 
 
 
-const Navbar = () => {
+const Navbar = ({user}) => {
 
 const demo = {
   height: 1500
@@ -50,7 +50,7 @@ const demo = {
 
   <Link to="/"><img src={mIcon} className='white-filter'/> </Link>
 
-  <Link to="/" ><img src={pIcon}   className='white-filter' style={padding}/>  Aleksandar Tomic <br></br> Plac: Dedina njiva </Link>
+  <Link to="/" ><img src={pIcon}   className='white-filter' style={padding}/>  {user ? user.username: ""} <br></br> Plac: Dedina njiva </Link>
   </div>
   </div>
 </nav>

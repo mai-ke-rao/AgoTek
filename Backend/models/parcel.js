@@ -4,6 +4,7 @@ const parcelSchema = new mongoose.Schema({
     name: String,
     vrsta_useva: String,
     povrsina: Number,
+    date: String,
     user: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}]
 })
 

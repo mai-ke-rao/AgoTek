@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import loginService from '../services/login'
-
+import { useNavigate } from 'react-router-dom'
+import parcelService from '../services/parcels'
 
 
 
@@ -8,7 +9,9 @@ import loginService from '../services/login'
 const Login = ({user, setUser}) => {
     const [username, setUsername] = useState('') 
     const [password, setPassword] = useState('')
+    const [errorMessage, setErrorMessage] = useState(null)
    
+    const navigate = useNavigate()
 
     const handleLogin = async (event) => {
         event.preventDefault()
@@ -17,10 +20,16 @@ const Login = ({user, setUser}) => {
             const user = await loginService.login({
               username, password,
             })
+            window.localStorage.setItem(
+              'loggedFarmAppUser', JSON.stringify(user)
+            )
             setUser(user)
+            parcelService.setToken(user.token)
             setUsername('')
             setPassword('')
+            navigate('/')
           } catch (exception) {
+            console.log(exception)
             setErrorMessage('Wrong credentials')
             setTimeout(() => {
               setErrorMessage(null)
@@ -52,6 +61,7 @@ const Login = ({user, setUser}) => {
         </div>
         <button type="submit">login</button>
       </form>
+      <h4>{errorMessage}</h4>
 
         </div>
       )

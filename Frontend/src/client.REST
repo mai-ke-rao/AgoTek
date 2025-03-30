@@ -1,0 +1,28 @@
+### Create a new user
+POST http://localhost:3001/api/users
+Content-Type:application/json
+Accept: application/json
+
+{
+"username":"Nikola",
+"name":"Nikola",
+"password":"Nikola"
+}
+###Login
+POST http://localhost:3001/api/login
+
+{
+"username": "Nikola",
+"password": "Nikola"
+}
+
+### Add Parcel
+POST http://localhost:3001/api/parcels
+Content-Type:application/json
+Authorization: bearer 
+
+{
+"name": "Nova",
+"vrsta_useva": "Sljiva",
+"povrsina": "1.2",
+}

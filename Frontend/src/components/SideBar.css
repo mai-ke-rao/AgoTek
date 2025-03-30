@@ -2,6 +2,12 @@
     width: 30%;
 }
 
+@media screen and (max-width: 700px){
+    .half-width{
+        visibility: collapse;
+    }
+}
+
 .flex{
     display: flex;
 }
