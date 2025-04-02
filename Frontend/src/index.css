@@ -1,6 +1,8 @@
 :root{
+    --pis-green: #80a474;
     --light-green: #4cd964;
     --stronger-green: #07bc0c; 
+    --heavy-green: #209c3c;
     --hoarse-green: #5ca47a;
     --border-green: #a8cf45;
     --hower-green: #f8fcec; 
@@ -15,9 +17,11 @@
     --logo-yellow:#ffcc2c;
     --light-hower-yellow:#fff4bc; 
   
+    --sublime-gray: #d1dfde;
     --whiteish-background: #e0e0e0;
     --graysh-background: #fafafa;
     --gray-letters: #686464; 
+    --form-gray: #f0f4f4;
     
   }
 

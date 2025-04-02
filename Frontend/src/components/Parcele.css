@@ -2,6 +2,11 @@
     display: flex;
 }
 
+.reset-link {
+    all: unset;
+    cursor: pointer; /* optional, to indicate it's clickable */
+  }
+
 .p3{
     padding: 16px !important;
 }
@@ -45,6 +50,7 @@ h1 {
 
 
 .content-widget-section {
+    margin-top: 55px;
     max-width: 680px;
     padding: 24px 64px;
 }
@@ -61,13 +67,28 @@ h1 {
     width: 100%;
 }
 
+.widget-widget-section:hover .widget-title-widget-section {
+    background-color:var(--fond-biljaka-istackani-deo)
+
+}
+
+
+.widget-widget-section:hover {
+    background-color:var(--fond-biljaka-istackani-deo)
+
+}
+
 .widget-title-widget-section{
+    background-color: var(--fond-biljaka-backround-green);
     align-items: center;
     border-top: 1px solid #5ca47a;
     display: flex;
     justify-content: space-between;
     padding: 8px 16px;
 }
+
+
+
 
 .widget-content-widget-section{
     position: relative;

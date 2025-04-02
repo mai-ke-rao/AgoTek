@@ -13,7 +13,8 @@ body {
   top: 15px;
   width: 100%;
   height: 70px; 
-  background-color:  var(--button-hower-dark-hoarse-green);
+  background-color: var(--hoarse-green);
+  /*background-color:  var(--button-hower-dark-hoarse-green);*/
   z-index: 1000;
 }
 

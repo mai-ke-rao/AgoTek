@@ -1,0 +1,209 @@
+.form-grid{
+    display: grid;
+    flex: 1;
+    width: 100%; 
+    box-sizing: border-box;
+    border: #ffcc29;
+margin-top: 20px;
+
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-rows: auto;
+    grid-auto-flow: column;
+    gap: 25px;
+
+
+}
+
+@media screen and (max-width: 800px)
+{
+    .form-grid{
+        display: flex;
+        flex-direction: column;
+    }
+    
+}
+
+.grid-form-el{
+    width: 100%;
+    margin-left: 25px;
+    margin-right: 25px;
+}
+
+input{
+    width: 100%;
+    height: 25px;
+}
+
+select{
+    width: 100%;
+    height: 25px;
+}
+.activities-container{
+    flex: 1; /* ⬅️ this tells it to grow and take space in the flexbox */
+    width: 100%; /* ⬅️ ensures the grid spans the whole available width */
+    box-sizing: border-box;
+border: #ffcc29;
+margin-top: 40px;
+display: grid;
+    grid-template-columns: 1fr 5fr 1fr;
+    grid-template-rows: 1900px;
+    grid-auto-flow: column
+
+}
+
+
+
+@media screen and (max-width: 1200px){
+    .activities-container{
+        width: 100%;
+        border: #ffcc29;
+        margin-top: 40px;
+        display: block;
+    }
+}
+
+
+
+.flex{
+    display: flex;
+}
+
+
+
+
+.p3{
+    padding: 16px !important;
+}
+
+
+
+.full-width {
+    width: 100%;
+   
+  }
+
+  h1 {
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1.2;
+    margin: 0;
+    border-bottom: 2px solid #ffcc29;
+    padding: 16px 24px;
+}
+
+.bar{
+    display: flex;
+   margin-top: 15px;
+   margin-right: 15px;
+   flex-direction: row-reverse;
+
+}
+
+
+.bar-button{
+    background-color: var(--hoarse-green);
+    color: White;
+    text-align: center;
+    border-radius: 8px;
+    padding: 7px;
+    padding-left: 15px;
+    padding-right: 15px;
+    
+    border: none;
+    
+
+
+}
+
+
+  
+  .sub-item {
+    background: white;
+    padding: 10px;
+    width: 100%; /* 👈 ensures full width */
+    box-sizing: border-box; /* includes padding in width */
+  }
+
+
+.form-container{
+
+    display: flex;
+    flex-direction: column;
+    /*width: 100% !important;*/
+    border: var(--hoarse-green);
+    border-width: 1px;
+}
+
+.group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    background: #f0f0f0;
+    padding: 10px;
+    height: 100%; /* optional, depends on layout */
+    
+  }
+
+  
+
+.border{
+
+    display: flex;
+    margin-top: 15px;
+    margin-right: 15px;
+    flex-direction: column;
+    width: 100%;
+    border-color:#209c3c;
+    border-top-width: 2px;
+    border-bottom-width: 2px;
+    border-left-width: 2px;
+    border-right-width: 2px;
+    border-style: solid;
+    border-radius: 8px;
+
+
+
+}
+
+.border-button{
+
+
+background-color:#d1dfde;/*rgb(185, 207, 188);*/
+text-align: left;
+padding: 5px 10px 5px ;
+font-size: medium;
+/*border-bottom: rgb(171, 171, 171);*/
+border-color: #c7c7c7;
+border-top-width: 0px;
+    border-bottom-width: 1px;
+    border-left-width: 0px;
+    border-right-width: 0px;
+width: 100%;
+height: 40px;
+border-top-left-radius: 4px;
+border-top-right-radius: 4px;
+color: var(--gray-letters);
+
+}
+
+
+.border-bottom{
+
+
+    background-color:#d1dfde;
+    text-align: left;
+    padding: 15px;
+    font-size: medium;
+    border-top-width: 1px;
+    border-bottom-width: 0px;
+    border-left-width: 0px;
+    border-right-width: 0px;
+    width: 100%;
+    height: 40px;
+   
+    
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+  
+    
+    }

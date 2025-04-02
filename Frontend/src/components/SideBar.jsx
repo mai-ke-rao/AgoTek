@@ -14,10 +14,12 @@ const SideBar = () => {
         <>
         
             <div className="sticky flex column half-width">
-                <div className="sidebar-link disabled">
+
+            <Link to='/vremenska' className='reset-link'>
+                <div className="sidebar-link">
                     Vremenska prognoza
                 </div>
-          
+                </Link>
 
         
 
@@ -27,10 +29,11 @@ const SideBar = () => {
     </div>
 
 
-
+        <Link to='/parcele' className='reset-link'>
     <div className="sidebar-link">
         Parcele
     </div>
+    </Link>
 
 
     <div className="sidebar-link disabled">
@@ -39,10 +42,11 @@ const SideBar = () => {
 
 
 
-
-    <div className="sidebar-link disabled">
+        <Link to='/aktivnosti' className='reset-link'>
+    <div className="sidebar-link">
         Aktivnosti
     </div>
+    </Link>
 
 
 

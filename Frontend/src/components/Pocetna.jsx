@@ -20,6 +20,8 @@ const Pocetna = () => {
         
         <div className="page-content"> 
             <div className="dashboard-widget-container">
+
+            <Link to='/vremenska' className='no-link-style'>
                 <div className='widget'>
                 <img src={weatherIcon}></img>
                 <div>
@@ -30,9 +32,11 @@ const Pocetna = () => {
 
                 </div>
 
+                </Link>
+
 
             
-                <div className='widget'>
+                <div className='widget disabled'>
                 <img src={meteoIcon}></img>
                 <div>
                     <h2>Meteo podaci</h2>
@@ -56,7 +60,7 @@ const Pocetna = () => {
                 </div>
                 </Link>
 
-                <div className='widget'>
+                <div className='widget disabled'>
                 <img src={analizaIcon}></img>
                 <div>
                     <h2>Analiza zemljista</h2>
@@ -66,7 +70,7 @@ const Pocetna = () => {
 
                 </div>
 
-
+                <Link to='/aktivnosti' className='no-link-style'>
                 <div className='widget'>
                 <img src={aktivnostIcon}></img>
                 <div>
@@ -76,9 +80,9 @@ const Pocetna = () => {
                 </div>
 
                 </div>
+                </Link>
 
-
-                <div className='widget'>
+                <div className='widget disabled'>
                 <img src={pcbIcon}></img>
                 <div>
                     <h2>Uredjaji</h2>

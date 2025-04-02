@@ -7,6 +7,7 @@ const middleware = require('./utils/middleware')
 const parcelsRouter = require('./controllers/parcels')
 const usersRouter = require('./controllers/users')
 const loginRouter = require('./controllers/login')
+const TTNRouter = require('./controllers/TTN')
 
 
 
@@ -27,6 +28,7 @@ app.use(cors())
 app.use(express.json())
 app.use('/api/users', usersRouter)
 app.use('/api/login', loginRouter)
+app.use('/api/TTN', TTNRouter)
 app.use(middleware.tokenExtractor)
 app.use('/api/parcels', parcelsRouter)
 

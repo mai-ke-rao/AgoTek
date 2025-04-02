@@ -40,7 +40,7 @@ const Parcele = ({parcels, setParcels, setChosenParcId}) => {
             <div className='widget-page'>
             {parcels.map(parc =>
                             
-                        <Link to='/' key={parc.id} onClick={() => choiceHandler(parc.id)}>
+                        <Link to='/' key={parc.id} onClick={() => choiceHandler(parc.id)} className='reset-link'>
                             <div className='content-widget-section'>
                                 <div className='widget-section'>
                                     <div className='widget-widget-section'>

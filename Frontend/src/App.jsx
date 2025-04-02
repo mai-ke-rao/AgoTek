@@ -10,6 +10,8 @@ import Parcele from './components/Parcele'
 import Login from './components/Login'
 import './index.css'
 import parcelService from './services/parcels'
+import Activities from './components/Activities'
+import Weather from './components/Weather'
 
 const Home = () => (
   <div> <h2>TKTL notes app</h2> </div>
@@ -45,12 +47,11 @@ const App = () => {
                   <Route path="/login" element={<Login setUser={setUser}/>}/>
                   <Route path="/" element={user ? <Pocetna /> : <Navigate replace to='/login'/>} />
                   <Route path="/parcele" element={<Parcele parcels={parcels} setParcels={setParcels} setChosenParcId={setChosenParcId}/>} />
-                  <Route path="/notes" element={<Home />} />
+                  <Route path="/aktivnosti" element={<Activities />} />
+                  <Route path="/vremenska" element={<Weather/>}/>
                 </Routes>
           
-                <div>
-                  <i>Note app, Department of Computer Science 2024</i>
-                </div>
+                
               </Router>
      
     </div>
