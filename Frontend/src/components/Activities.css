@@ -8,20 +8,41 @@ margin-top: 20px;
 
     grid-template-columns: 1fr 1fr 1fr 1fr;
     grid-template-rows: auto;
-    grid-auto-flow: column;
+    grid-auto-flow: row;
     gap: 25px;
+    padding-right: 40px;
 
 
 }
+
+.komentar{
+    grid-column-start: 1;
+    grid-column-end: 5;
+    width: 100% !important;
+    margin-left: 25px;
+    margin-right: 25px;
+    padding-right: 40px;
+    margin-bottom: 20px;
+}
+
+.komentar textarea{
+    width: 100% !important;
+    height: 50px !important;
+}
+
 
 @media screen and (max-width: 800px)
 {
     .form-grid{
         display: flex;
         flex-direction: column;
+        box-sizing: border-box;
+        padding-right: 40px;
     }
+
     
 }
+
 
 .grid-form-el{
     width: 100%;
@@ -114,6 +135,10 @@ display: grid;
 
 
 }
+.bar-button:hover{
+    background-color: var(--button-hower-dark-hoarse-green);
+    cursor: pointer;
+}
 
 
   
@@ -187,9 +212,10 @@ color: var(--gray-letters);
 }
 
 
+
 .border-bottom{
 
-
+    
     background-color:#d1dfde;
     text-align: left;
     padding: 15px;
@@ -200,10 +226,36 @@ color: var(--gray-letters);
     border-right-width: 0px;
     width: 100%;
     height: 40px;
+    margin-top: 15px;
    
     
     border-bottom-left-radius: 4px;
     border-bottom-right-radius: 4px;
   
     
+    }
+
+    #sacuvaj{
+            float: right;
+            margin-right: 5px;
+            position: relative;
+            bottom: 8px;
+            padding: 4px;
+            font-size: 14px;
+           
+            
+    }
+
+    #odustani{
+        float: right;
+            margin-right: 5px;
+            position: relative;
+            bottom: 8px;
+            padding: 4px;
+            font-size: 14px;
+            background-color: rgb(255, 55, 0);
+    }
+
+    #odustani:hover{
+        background-color: rgb(192, 31, 31);
     }

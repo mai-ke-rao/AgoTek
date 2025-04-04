@@ -33,8 +33,8 @@ if(Object.is(undefined, parcel.name)){
 
 
 const result = await parcel.save()
-console.log("parcela: ",parcel)
-console.log("date: ", datetime.toISOString().slice(0,10))
+
+
 user.parcels = user.parcels.concat(result.id)
 await user.save()
 

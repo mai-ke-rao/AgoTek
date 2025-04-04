@@ -4,12 +4,12 @@ import './index.css'
 import App from './App.jsx'
 import { configureStore } from '@reduxjs/toolkit'
 import { Provider } from 'react-redux'
-import parcelReducer from './reducers/parcelReducer.jsx'
+import activitiesReducer from './reducers/activitiesReducer'
 
 
 const store = configureStore({
   reducer: {
-    parcels: parcelReducer
+    activities: activitiesReducer
   }
 })
 

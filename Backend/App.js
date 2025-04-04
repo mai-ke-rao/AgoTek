@@ -8,6 +8,7 @@ const parcelsRouter = require('./controllers/parcels')
 const usersRouter = require('./controllers/users')
 const loginRouter = require('./controllers/login')
 const TTNRouter = require('./controllers/TTN')
+const activitesRouter = require('./controllers/activities')
 
 
 
@@ -30,6 +31,8 @@ app.use('/api/users', usersRouter)
 app.use('/api/login', loginRouter)
 app.use('/api/TTN', TTNRouter)
 app.use(middleware.tokenExtractor)
+app.use(middleware.requestLogger)
+app.use('/api/activities', activitesRouter)
 app.use('/api/parcels', parcelsRouter)
 
 

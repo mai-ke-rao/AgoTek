@@ -13,6 +13,7 @@ import parcelService from './services/parcels'
 import Activities from './components/Activities'
 import Weather from './components/Weather'
 
+
 const Home = () => (
   <div> <h2>TKTL notes app</h2> </div>
 )
@@ -20,20 +21,30 @@ const Home = () => (
 
 
 const App = () => {
-  const [user, setUser] = useState(null)
-
-
+  const [user, setUser] = useState(JSON.parse(window.localStorage.getItem('loggedFarmAppUser')))
   const [parcels, setParcels] = useState([])
-  const [chosenParcId, setChosenParcId] = useState(null)
+  const [chosenParcId, setChosenParcId] = useState(JSON.parse(window.localStorage.getItem('chosenParcelId')))
   
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedFarmAppUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
+      setChosenParcId(JSON.parse(window.localStorage.getItem('chosenParcelId')))
       setUser(user)
       parcelService.setToken(user.token)
+     
     }
   }, [])
+
+   useEffect(() => {
+      parcelService.getAll().then(returnedParcels => 
+          setParcels(returnedParcels)
+      )
+  
+   }, [])
+
+console.log("parcelId", chosenParcId);
+console.log("user", user);
 
 
 
