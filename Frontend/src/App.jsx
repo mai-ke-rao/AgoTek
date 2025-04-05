@@ -10,6 +10,7 @@ import Parcele from './components/Parcele'
 import Login from './components/Login'
 import './index.css'
 import parcelService from './services/parcels'
+import activitiesService from './services/activities'
 import Activities from './components/Activities'
 import Weather from './components/Weather'
 
@@ -32,6 +33,7 @@ const App = () => {
       setChosenParcId(JSON.parse(window.localStorage.getItem('chosenParcelId')))
       setUser(user)
       parcelService.setToken(user.token)
+      activitiesService.setToken(user.token)
      
     }
   }, [])
@@ -58,7 +60,7 @@ console.log("user", user);
                   <Route path="/login" element={<Login setUser={setUser}/>}/>
                   <Route path="/" element={user ? <Pocetna /> : <Navigate replace to='/login'/>} />
                   <Route path="/parcele" element={<Parcele parcels={parcels} setParcels={setParcels} setChosenParcId={setChosenParcId}/>} />
-                  <Route path="/aktivnosti" element={<Activities />} />
+                  <Route path="/aktivnosti" element={<Activities chosenParcId={chosenParcId}/>} />
                   <Route path="/vremenska" element={<Weather/>}/>
                 </Routes>
           

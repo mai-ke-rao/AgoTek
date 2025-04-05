@@ -22,7 +22,7 @@ const generateId = () =>
 
 const activitiesSlice = createSlice({
     name: 'activities',
-    initialState,
+    initialState: [],
     reducers: {
         createActivity(state, action){
             const content = action.payload
@@ -32,11 +32,17 @@ const activitiesSlice = createSlice({
             })
             console.log(current(state))
             return state
+        },
+        addActivitiy(state, action){
+            state.push(action.payload)
+        },
+        setActivities(state, action){
+            return action.payload
         }
 
     }
 
 })
 
-export const {createActivity} = activitiesSlice.actions
+export const {createActivity, addActivitiy, setActivities} = activitiesSlice.actions
 export default activitiesSlice.reducer
