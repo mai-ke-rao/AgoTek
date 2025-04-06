@@ -4,9 +4,9 @@ import {useState, useEffect} from 'react'
 import activitiesReducer, {setActivities, addActivitiy} from '../reducers/activitiesReducer'
 import { useDispatch, useSelector } from 'react-redux'
 import activitiesService from '../services/activities'
-import React, { useRef } from 'react';
+
 import ActivitiesPreview from './activitiesPreview'
-import activityValidate from '../activityValidate'
+
 
 
 
