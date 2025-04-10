@@ -2,22 +2,23 @@ import SideBar from './SideBar'
 import emptyImage from '../assets/placeholder.png'
 import './Parcele.css'
 import { useEffect, useState } from 'react'
+import parcelService from '../services/parcels'
 
 import {
     Link
  } from 'react-router-dom'
 
-const Parcele = ({parcels,  setChosenParcId}) => {
+const Parcele = ({parcels, setParcels, setChosenParcId}) => {
 
 
-    /*
+    
 
- useEffect(() => {
+ 
     parcelService.getAll().then(returnedParcels => 
         setParcels(returnedParcels)
     )
 
- }, [])*/
+
 
  const choiceHandler = (parcId) => {
 

@@ -13,6 +13,7 @@ import parcelService from './services/parcels'
 import activitiesService from './services/activities'
 import Activities from './components/Activities'
 import Weather from './components/Weather'
+import Devices from './components/Devices'
 
 
 const Home = () => (
@@ -37,14 +38,19 @@ const App = () => {
      
     }
   }, [])
-
+/*
    useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem('loggedFarmAppUser')
+    if (loggedUserJSON) {
       parcelService.getAll().then(returnedParcels => 
           setParcels(returnedParcels)
+           
       )
+       }
   
-   }, [])
+   }, [])*/
 
+console.log("parcels: ", parcels);
 console.log("parcelId", chosenParcId);
 console.log("user", user);
 
@@ -62,6 +68,7 @@ console.log("user", user);
                   <Route path="/parcele" element={<Parcele parcels={parcels} setParcels={setParcels} setChosenParcId={setChosenParcId}/>} />
                   <Route path="/aktivnosti" element={<Activities chosenParcId={chosenParcId}/>} />
                   <Route path="/vremenska" element={<Weather/>}/>
+                  <Route path="/uredjaji" element={<Devices/>}/>
                 </Routes>
           
                 

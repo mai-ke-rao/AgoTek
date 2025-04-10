@@ -14,7 +14,7 @@ import ActivitiesPreview from './activitiesPreview'
 
 const Activities = ({chosenParcId}) => {
 
-    const [showA, setShowA] = useState(true)
+    const [showA, setShowA] = useState(false)
     const [disableForm, setDisableForm] = useState(false)
     const dispatch = useDispatch()
 

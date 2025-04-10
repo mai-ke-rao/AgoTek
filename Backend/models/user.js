@@ -15,6 +15,12 @@ const userSchema = new mongoose.Schema({
       ref: 'Parcel'
     }
   ],
+  devices: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Device'
+    }
+  ]
 })
 
 userSchema.set('toJSON', {

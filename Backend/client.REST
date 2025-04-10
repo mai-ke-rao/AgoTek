@@ -41,3 +41,24 @@ Authorization: "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik5p
         "parcel": "67e6f7f8e68483481acb1ad0"
     }
 
+
+### Downlink to TTN example
+POST  https://eu1.cloud.thethings.network/api/v3/as/applications/novappprroba/webhooks/proba-hook/devices/mojuredjajsafaksa/down/push
+Content-Type:application/json
+Authorization: "Bearer NNSXS.523DYXOLFLU5C25C5VYOUIVAJUF5CKDCSB6JWZY.ERBFIWIOA24ALXZFLKTTDRDJ7ADRA77VRK7WMOUMEIBHYBKEM4OQ" 
+
+   {
+  "end_device_ids" : {
+    "device_id" : "mojuredjajsafaksa",                    // Device ID
+    "application_ids" : {
+      "application_id" : "novappprroba"              // Application ID
+    }
+  },
+  "downlinks": [{
+    "f_port": 1,                            // Frame port
+    "frm_payload": "MTU=",                   // Frame payload (Base64)
+    "priority": "NORMAL",                    // Priority of the message in the downlink queue
+    "confirmed": true,                       // If the downlink expects a confirmation from the device or not
+    "correlation_ids" : [  "as:downlink:01JRB8MYRJ77TC6PBCEH7ZBAQD" ]      // Correlation identifiers of the message
+  }]
+}
