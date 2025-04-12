@@ -1,10 +1,27 @@
 
 import SideBar from './SideBar'
 import './Devices.css'
+import devicesSerivce from '../services/devices'
 
 
-const Devices = () => {
+const FormDialog = () => {
 
+    
+    
+    return(
+            <div>
+                
+            </div>
+
+    )
+}
+
+const Devices = ({deviceList, setDeviceList}) => {
+
+devicesSerivce.getAll().then(devList => 
+    setDeviceList(...devList)
+)
+console.log("dev list: ", deviceList);
 
 
 
@@ -21,7 +38,7 @@ const Devices = () => {
             
             <table>
                 <thead>
-                    <tr>
+                    <tr >
                         <th className='tName'>name</th>
                         <th className='tInput'>last input</th>
                         <th className='tconnection'>connection</th>

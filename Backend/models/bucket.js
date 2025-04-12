@@ -1,13 +1,13 @@
 const mongoose = require('mongoose')
 
 
-const deviceSchema = new mongoose.Schema({
+const bucketSchema = new mongoose.Schema({
     name: String,
-    apikey_encrypted: String,
-    dev_id: String,
-    app_id: String,
-    hook_id: String,
-    user: {type: mongoose.Schema.Types.ObjectId, ref: 'User'}
+    value: Schema.Types.Mixed,
+    date_time: String,
+    dev_id: String
+
+    
 })
 
 deviceSchema.set('toJSON', {
@@ -18,4 +18,4 @@ deviceSchema.set('toJSON', {
     }
   })
   
-  module.exports = mongoose.model('Device', deviceSchema)
+  module.exports = mongoose.model('Bucket', bucketSchema)
