@@ -28,7 +28,14 @@ const App = () => {
   const [user, setUser] = useState(JSON.parse(window.localStorage.getItem('loggedFarmAppUser')))
   const [parcels, setParcels] = useState([])
   const [chosenParcId, setChosenParcId] = useState(JSON.parse(window.localStorage.getItem('chosenParcelId')))
-  const [chosenDev, setChosenDev] = useState()
+  const [chosenDev, setChosenDev] = useState(
+    {
+      name: "",
+      hook_id: "",
+      dev_id:"",
+      app_id:""
+    }
+  )
   
   
   useEffect(() => {
@@ -78,6 +85,7 @@ console.log("user", user);
                   <Route path="/vremenska" element={<Weather/>}/>
                   <Route path="/uredjaji" element={<Devices setChosenDev={setChosenDev}/>}/>
                   <Route path="/device_menu" element={<DeviceMenu chosenDev={chosenDev}/>}/>
+
                 </Routes>
           
                 

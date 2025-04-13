@@ -207,3 +207,7 @@ tr{
 .tdate-created{
     width: 260px;
 }
+
+.middle-margin{
+    margin-left: 33vw;
+}

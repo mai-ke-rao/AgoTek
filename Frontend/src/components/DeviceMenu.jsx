@@ -2,6 +2,7 @@ import './DeviceMenu.css'
 import SideBar from './SideBar'
 import {useState} from 'react'
 import Bucket from './Bucket'
+import SendDownlink from './SendDownlink'
 
 
 const DeviceMenu = ({chosenDev}) => {
@@ -21,7 +22,8 @@ const DeviceMenu = ({chosenDev}) => {
                 <button className={`menu-item ${chosenTab == "downlink"? "clicked" : ""}`} onClick={() => setChosenTab("downlink")}>send downlink</button>
             </div>
 
-            {chosenTab == "data"? <Bucket/>: ""}
+            {chosenTab == "data"? <Bucket chosenDev={chosenDev}/>: ""}
+            {chosenTab == "downlink"? <SendDownlink chosenDev={chosenDev}/>: "" }
         </div>
         </div>
         </div>

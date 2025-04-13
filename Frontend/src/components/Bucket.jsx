@@ -1,11 +1,17 @@
-
+import { useState, useEffect } from 'react'
 import './Bucket.css'
+import devicesService from '../services/devices'
 
+const Bucket = ({chosenDev}) => {
 
-const Bucket = () => {
+    const [bucket, setBucket] = useState([])
+    const [page, setPage] = useState('1')
 
+useEffect(() => {
+    devicesService.getDataPage(chosenDev.dev_id, page).then((data) => 
+    setBucket([...data]))
 
-
+},[page])
 
     return(
         <div>
@@ -13,27 +19,34 @@ const Bucket = () => {
         <thead>
             <tr >
                 <th className='tName'>name</th>
-                <th className='tInput'>last input</th>
-                <th className='tconnection'>connection</th>
-                <th className='tstatus'>status</th>
-                <th className='tbattery'>battery</th>
-                <th className='tdate-created'>date created</th>
+                <th className='tInput'>value</th>
+                <th className='tconnection'>date time</th>
+              
             </tr>
             </thead>
             <tbody>
-            <tr>
-            <td>NaN</td>
-                <td>NaN</td>
-                    <td>NaN</td>
-                    <td>NaN</td>
-                    <td>NaN</td>
-                    <td>NaN</td>
-                 </tr>
+            {bucket.map(el => 
+                <tr id='el.id'>
+                    <td>
+                        {el.name}
+                    </td>
+                    <td>
+                        {el.value}
+                    </td>
+                    <td>
+                        {el.date_time}
+                    </td>
+                </tr>
+                 )}
+         
                 
                     </tbody>
                 
             </table>
-       
+       <br></br>
+       <br></br>
+       <br></br>
+       <button onClick={() => setPage((Number(page) - 1))} className='middle-margin'>Prev</button> <button onClick={() => setPage((Number(page) + 1))}>Next</button>
                  </div>                  
     )
 }

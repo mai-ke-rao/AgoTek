@@ -79,11 +79,14 @@ if(Object.is(undefined, device.name || device.apikey_hash)){
 
 })
 
-
+//Shouldn't I do decrytion here?
 TTNRouter.get('/device_list', userExtractor, async(request, response) => {
 
-
+  
     const devices = await Device.find({user: request.user.id.toString()})
+    devices.forEach(el => {
+        el.apikey = jwt.verify(el.apikey_encrypted, process.env.SECRET) 
+    })
     response.status(200).json(devices)
 })
 
@@ -92,16 +95,12 @@ TTNRouter.get('/device_list', userExtractor, async(request, response) => {
 
 //getting the device data in bathces of 15 (hopefully newer to older)
 TTNRouter.get('/device_data/:dev_id/:page', userExtractor, async(request, response) => {
-    const user = request.user
-    const device = user.devices.find(request.params.dev_id)
-    if(!device){
-        return response.status(400)
-    }
-    const device_id = device.dev_id
+    
+    
 
     
-    const skip = (15*request.params.page)-15
-    const data = await Bucket.find({dev_id: device_id}).limit(15).skip(skip)
+    const skip = (15*Number(request.params.page))-15
+    const data = await Bucket.find({dev_id: request.params.dev_id}).limit(15).skip(skip)
     return response.json(data).status(200)
     
 
