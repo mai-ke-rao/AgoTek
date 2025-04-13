@@ -31,10 +31,10 @@ app.use('/api/users', usersRouter)
 app.use('/api/login', loginRouter)
 
 app.use(middleware.requestLogger)
-app.use('/api/TTN', TTNRouter)
+
 
 app.use(middleware.tokenExtractor)
-
+app.use('/api/TTN', TTNRouter)
 app.use('/api/activities', activitesRouter)
 app.use('/api/parcels', parcelsRouter)
 

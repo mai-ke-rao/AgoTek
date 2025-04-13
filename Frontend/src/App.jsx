@@ -15,6 +15,7 @@ import devicesService from './services/devices'
 import Activities from './components/Activities'
 import Weather from './components/Weather'
 import Devices from './components/Devices'
+import DeviceMenu from './components/DeviceMenu'
 
 
 const Home = () => (
@@ -27,8 +28,8 @@ const App = () => {
   const [user, setUser] = useState(JSON.parse(window.localStorage.getItem('loggedFarmAppUser')))
   const [parcels, setParcels] = useState([])
   const [chosenParcId, setChosenParcId] = useState(JSON.parse(window.localStorage.getItem('chosenParcelId')))
-
-  const [deviceList, setDeviceList] = useState([])
+  const [chosenDev, setChosenDev] = useState()
+  
   
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedFarmAppUser')
@@ -38,7 +39,10 @@ const App = () => {
       setUser(user)
       parcelService.setToken(user.token)
       activitiesService.setToken(user.token)
-      devicesService.setToken(user.Token)
+      devicesService.setToken(user.token)
+      parcelService.getAll().then(returnedParcels => 
+        setParcels(returnedParcels)
+    )
      
     }
   }, [])
@@ -72,7 +76,8 @@ console.log("user", user);
                   <Route path="/parcele" element={<Parcele parcels={parcels} setParcels={setParcels} setChosenParcId={setChosenParcId}/>} />
                   <Route path="/aktivnosti" element={<Activities chosenParcId={chosenParcId}/>} />
                   <Route path="/vremenska" element={<Weather/>}/>
-                  <Route path="/uredjaji" element={<Devices deviceList={deviceList} setDeviceList={setDeviceList}/>}/>
+                  <Route path="/uredjaji" element={<Devices setChosenDev={setChosenDev}/>}/>
+                  <Route path="/device_menu" element={<DeviceMenu chosenDev={chosenDev}/>}/>
                 </Routes>
           
                 

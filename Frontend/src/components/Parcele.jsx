@@ -14,9 +14,7 @@ const Parcele = ({parcels, setParcels, setChosenParcId}) => {
     
 
  
-    parcelService.getAll().then(returnedParcels => 
-        setParcels(returnedParcels)
-    )
+    
 
 
 

@@ -70,7 +70,7 @@ if(Object.is(undefined, device.name || device.apikey_hash)){
         const result = await device.save()
         
         const user = request.user
-        user.devices = user.devices.concata(result.id)
+        user.devices = user.devices.concat(result.id)
         await user.save() 
 
         response.status(201).json(result)
@@ -84,7 +84,7 @@ TTNRouter.get('/device_list', userExtractor, async(request, response) => {
 
 
     const devices = await Device.find({user: request.user.id.toString()})
-    response.json(devices)
+    response.status(200).json(devices)
 })
 
 
