@@ -40,6 +40,7 @@ else{
 }
 const userExtractor = async(request, response, next) => {
 
+  logger.info("yoyoyo", request.token)
   const decodedToken = jwt.verify(request.token, process.env.SECRET) 
   if(!decodedToken.id)
   {

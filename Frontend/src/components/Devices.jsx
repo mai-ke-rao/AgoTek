@@ -75,7 +75,18 @@ const FormDialog = ({setShowDialog, devList, setDeviceList}) => {
                                     </div>
                                     </div>
 
-
+                                    <div className='input-container'>
+                                    <div className='display-block'>
+                                    <div className='input-item'>
+                                    <div className='label-container'>
+                                        <label htmlFor='app_id'><strong>app id</strong> </label>
+                                    </div>
+                                    <div className='.iui-input-container'>
+                                        <input type='text' name='app_id' value={formData['app_id']} onChange={hadnleChange}></input>
+                                    </div>
+                                    </div>
+                                    </div>
+                                    </div>
 
                                     <div className='input-container'>
                                     <div className='display-block'>

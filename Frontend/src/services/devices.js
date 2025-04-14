@@ -1,7 +1,7 @@
 import axios from 'axios'
 const origin = 'http://localhost:3001'
 const baseUrl = '/api/TTN'
-
+import {decode as base64_decode, encode as base64_encode} from 'base-64';
 let token = null
 
 const setToken = newToken => {
@@ -51,12 +51,29 @@ const request = axios.get(origin+baseUrl+path+dev_id+"/"+page, config)
 
 const sendDownlink = (dev, payload) => {
 
-  const path = `https://eu1.cloud.thethings.network/api/v3/as/applications/${dev.app_id}/webhooks/${dev.hook_id}/devices/${dev.dev_id}/down/push`
+  const token = `Bearer ${JSON.parse(window.localStorage.getItem('loggedFarmAppUser'))?.token}`
 
   const config = {
-    headers: { Authorization:  dev.apikey_encrypted},
+    headers: { Authorization: token },
   }
-  const request = axios.get(path, config)
+  
+
+   const b64Payload = base64_encode(payload)
+
+  const object = 
+  {
+    app_id: dev.app_id,
+    hook_id: dev.hook_id,
+    dev_id:  dev.dev_id,
+    downlinkPayload: {
+      frm_payload: b64Payload,
+      f_port: 1,
+      priority: 'NORMAL'
+    }
+  }
+
+
+  const request = axios.post(origin+baseUrl+"/send-downlink", object, config)
   return request.then(response => response)
 }
 

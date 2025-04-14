@@ -6,19 +6,20 @@ const config = require('../utils/config')
 const Device = require('../models/device')
 const Bucket = require('../models/bucket')
 const { tokenExtractor, userExtractor } = require('../utils/middleware')
+const fetch = require('node-fetch'); 
 
 
-
-TTNRouter.get('/', async(request, response) => {
-    response.set()
-    response.status(200).json({"captain_teemo":"on duty"})
-})
 
 //getting data from ttn
 TTNRouter.post('/', async(request, response) => {
 
-    const data = request.body.uplink_message.decoded_payload === null? false : request.body.uplink_message.decoded_payload
+    if(Object.is(undefined, request.body.uplink_message.decoded_payload))
+    {
+            return
+    }
+    const data = request.body.uplink_message.decoded_payload
     const dev_id = request.body.end_device_ids.device_id
+
 
     if(!data){
 
@@ -32,7 +33,7 @@ TTNRouter.post('/', async(request, response) => {
         const bucket = {
             name: variable,
             value: data[variable],
-            date_time: datetime.toISOString().slice(0, 19),
+            date_time: datetime.toISOString().slice(0, 19),  //new Date() more optimal
             dev_id: dev_id
         };
         dataArray.push(bucket);
@@ -85,7 +86,7 @@ TTNRouter.get('/device_list', userExtractor, async(request, response) => {
   
     const devices = await Device.find({user: request.user.id.toString()})
     devices.forEach(el => {
-        el.apikey = jwt.verify(el.apikey_encrypted, process.env.SECRET) 
+        el.apikey_encrypted = ""
     })
     response.status(200).json(devices)
 })
@@ -100,7 +101,7 @@ TTNRouter.get('/device_data/:dev_id/:page', userExtractor, async(request, respon
 
     
     const skip = (15*Number(request.params.page))-15
-    const data = await Bucket.find({dev_id: request.params.dev_id}).limit(15).skip(skip)
+    const data = await Bucket.find({dev_id: request.params.dev_id}).sort({date_time: -1}).limit(15).skip(skip)
     return response.json(data).status(200)
     
 
@@ -108,5 +109,37 @@ TTNRouter.get('/device_data/:dev_id/:page', userExtractor, async(request, respon
 })
 
 
+
+TTNRouter.post('/send-downlink', userExtractor, async (req, res) => {
+    const { dev_id, app_id, hook_id, downlinkPayload } = req.body;
+    logger.info("we are rolling")
+    const url = `https://eu1.cloud.thethings.network/api/v3/as/applications/${app_id}/webhooks/${hook_id}/devices/${dev_id}/down/push`;
+  
+    
+    const device = await Device.find({user: req.user.id.toString(), dev_id: dev_id.toString()})
+    logger.info("key from device", device[0].apikey_encrypted)
+   
+
+    const apikey = jwt.verify(device[0].apikey_encrypted, process.env.SECRET)
+    try {
+        
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${apikey}`,
+          'Content-Type': 'application/json',
+          'User-Agent': 'my-app/1.0'
+        },
+        body: JSON.stringify({ downlinks: [downlinkPayload] })
+      });
+  
+      const result = await response;
+      logger.info("response status", result['Symbol(Response internals)'].status)
+      res.status(200)
+    } catch (error) {
+      console.error('Error pushing to TTN:', error);
+      res.status(500).json({ error: 'Failed to send downlink' });
+    }
+  });
 
 module.exports = TTNRouter
