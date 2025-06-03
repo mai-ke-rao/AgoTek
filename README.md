@@ -1,7 +1,7 @@
 Veb aplikacija za upravljanje poljoprivrednom proizvodnjom. 
 
-Aplikacija sadrži:
-  -Mogućnost kreiranja i odabira parcele, 
+Aplikacija sadrži: \
+  -Mogućnost kreiranja i odabira parcele, \
   -Forme za unos i evidenitranje radnji koje se vrše na određenoj parceli,
   -Mogućnost upravljanja i praćenje podataka sa pametnih LoraWAN uređaja korišćenjem ’’The Things Network’’ platforme.
 
