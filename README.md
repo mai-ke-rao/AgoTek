@@ -11,7 +11,7 @@ kako na personalnim računarima tako i na mobilnim uređajima.
 Cilj zadatka je kreiranje sveobuhvatne platforme za upravljanje poljoprivrednim imanjem\
 koja bi korišćenjem podataka o proizvodnji omogućila ekspertske savete za agrotehničke mere.
 
-Izazov predstavlja integracija sa nizom azličitih uređaja, komunikacionih protokola i mrežnih servisa \
+Izazov predstavlja integracija sa nizom različitih uređaja, komunikacionih protokola i mrežnih servisa \
 koji se koriste u poljoprivredi kao i poboljšanje sigurnosti jer aplikacija zahteva visok nivo dostupnosti i pouzdanosti.\
 
 U narednom periodu želim da omogućim korisnicima:\
