@@ -16,5 +16,6 @@ koji se koriste u poljoprivredi kao i poboljšanje sigurnosti jer aplikacija zah
 
 U narednom periodu želim da omogućim korisnicima:\
   -Vizualizaciju podataka kroz odabir i prilagođavanje widžeta,\
-  -Da dele podatke sa svojih uređaja drugim korisnicima (komšijama, savetodavcima, investitorima ili osiguravajućim kućama)
+  -Da dele podatke sa svojih uređaja drugim korisnicima (komšijama, savetodavcima, investitorima ili osiguravajućim kućama) \
+  -Integraciju sa ChripStackom i da integracija sa TTN bude seamless
   
