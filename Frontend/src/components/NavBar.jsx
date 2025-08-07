@@ -2,7 +2,7 @@ import { useState }  from 'react'
 import ReactDOM from 'react-dom/client'
 import {
   BrowserRouter as Router,
-  Routes, Route, Link
+  Routes, Route, Link, useNavigate
 } from 'react-router-dom'
 import '../index.css'
 import '../App.css'
@@ -17,6 +17,7 @@ import pIcon from "../assets/picpeople.png"
 
 const Navbar = ({user, parcels, chosenParcId}) => {
 
+  const navigate = useNavigate()
 
 const pickedParc = () => {
 
@@ -28,6 +29,12 @@ const pickedParc = () => {
   return  chosen ? chosen.name : ""
 
 
+}
+
+const handleLogout = () => {
+  localStorage.clear();
+  navigate('/login')
+  window.location.reload();
 }
  
 const demo = {
@@ -64,6 +71,12 @@ const demo = {
   <Link to="/"><img src={mIcon} className='white-filter'/> </Link>
 
   <Link to="/" ><img src={pIcon}   className='white-filter' style={padding}/> Ime: {user ? user.username: ""} <br></br> Plac: {pickedParc()} </Link>
+  
+  
+  <button className='logout' onClick={() => handleLogout()}>
+  Odjava
+  </button>
+  
   </div>
   </div>
 </nav>

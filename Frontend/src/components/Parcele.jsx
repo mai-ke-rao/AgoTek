@@ -1,18 +1,22 @@
 import SideBar from './SideBar'
 import emptyImage from '../assets/placeholder.png'
 import './Parcele.css'
+import './Devices.css'
 import { useEffect, useState } from 'react'
 import parcelService from '../services/parcels'
-
+import closeIcon from '../assets/cancel.png'
 import {
     Link
  } from 'react-router-dom'
+
+
+
 
 const Parcele = ({parcels, setParcels, setChosenParcId}) => {
 
 
     
-
+const [showDialog, setShowDialog] = useState(false)
  
     
 
@@ -28,6 +32,11 @@ const Parcele = ({parcels, setParcels, setChosenParcId}) => {
 
  }
 
+ useEffect(() => {
+
+    parcelService.getAll().then(returnedParcels => 
+        setParcels(returnedParcels))
+ }, [])
 
 
     return(
@@ -36,6 +45,9 @@ const Parcele = ({parcels, setParcels, setChosenParcId}) => {
         <div className='full-width'>
             
             <h1>Parcele</h1>
+             <div className='bar'>
+                <button className='bar-button' onClick={()=>setShowDialog(true)}> Dodaj parcelu </button>
+                </div>
             <div className='widget-page'>
             {parcels.map(parc =>
                             
@@ -71,7 +83,109 @@ const Parcele = ({parcels, setParcels, setChosenParcId}) => {
              </div>
 
         </div>
+           {showDialog? <FormDialog setShowDialog={setShowDialog} parcels={parcels} setParcels={setParcels}/>:null}
         </div>
+    )
+}
+
+
+
+const FormDialog = ({setShowDialog, parcels, setParcels}) => {
+
+    const [formData, setFormData] = useState(
+        {
+            name:"",
+            vrsta_useva:"",
+            povrsina: "",
+           
+        }
+    )
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        
+        const newParcel = await parcelService.addNew(formData)
+        setParcels([...parcels, newParcel])
+        console.log("device list in hanlde submit: ",devList);
+        
+    }
+
+
+    const hadnleChange = (event) => {
+        const { name , value } = event.target;
+        setFormData((prevState) =>  ({ ...prevState, [name]: value}))
+    }
+    
+    return(
+            <div className='dialog'>
+                <div className='dialog-container'>
+                    <div className='loader-container'>
+                        <div>
+                            <div className='flex full-width justify-right' onClick={() => setShowDialog(false)}>
+                                <img src={closeIcon}></img>
+                                </div>
+                                <h2>Dodaj parcelu</h2><br></br>
+                                <br></br><br></br>
+                            <div className='flex column gap-5'>
+                                <form className='form-container full-width' onSubmit={handleSubmit}>
+                            <div className='input-container'>
+                                <div className='display-block'>
+                                <div className='input-item'>
+                                    <div className='label-container'>
+                                        <label htmlFor='name'><strong>Ime</strong> </label>
+                                    </div>
+                                    <div className='.iui-input-container'>
+                                        <input type='text' name='name' value={formData['name']} onChange={hadnleChange}></input>
+                                    </div>
+                                    </div>
+                                    </div>
+                                    </div>
+
+                                    <div className='input-container'>
+                                    <div className='display-block'>
+                                    <div className='input-item'>
+                                    <div className='label-container'>
+                                        <label htmlFor='vrsta_useva'><strong>vrste useva</strong> </label>
+                                    </div>
+                                    <div className='.iui-input-container'>
+                                        <input type='text' name='vrsta_useva' value={formData['vrsta_useva']} onChange={hadnleChange}></input>
+                                    </div>
+                                    </div>
+                                    </div>
+                                    </div>
+
+                                    <div className='input-container'>
+                                    <div className='display-block'>
+                                    <div className='input-item'>
+                                    <div className='label-container'>
+                                        <label htmlFor='povrsina'><strong>povrsina u hektarima</strong> </label>
+                                    </div>
+                                    <div className='.iui-input-container'>
+                                        <input type='text' name='povrsina' value={formData['povrsina']} onChange={hadnleChange}></input>
+                                    </div>
+                                    </div>
+                                    </div>
+                                    </div>
+
+                                
+
+
+
+                        
+
+                                    
+                                    <div className='bar'>
+                <button className='bar-button' type="submit"> Dodaj parcelu </button>
+                </div>
+
+                                    
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+
     )
 }
 

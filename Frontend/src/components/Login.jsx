@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import loginService from '../services/login'
 import { useNavigate } from 'react-router-dom'
 import parcelService from '../services/parcels'
+import './Login.css'
 
 
 
@@ -39,8 +40,9 @@ const Login = ({user, setUser}) => {
     
 
       return(
-        <div>
-            <form onSubmit={handleLogin}>
+        <div className='container'>
+          <div className='login-box'>
+            <form onSubmit={handleLogin} >
         <div>
           username
             <input
@@ -62,7 +64,7 @@ const Login = ({user, setUser}) => {
         <button type="submit">login</button>
       </form>
       <h4>{errorMessage}</h4>
-
+        </div>
         </div>
       )
 

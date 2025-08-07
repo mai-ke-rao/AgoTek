@@ -39,6 +39,7 @@ return response.data
 const getDataPage = (dev_id, page) => {
 
 const path = '/device_data/'
+ const token = `Bearer ${JSON.parse(window.localStorage.getItem('loggedFarmAppUser'))?.token}`
 const config = {
   headers: { Authorization: token },
 }

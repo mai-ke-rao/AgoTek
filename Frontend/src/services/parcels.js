@@ -18,4 +18,17 @@ const getAll = () => {
   }
 
 
-  export default {getAll, setToken}
+  const addNew = async (content) => {
+
+    const faketoken = `Bearer ${JSON.parse(window.localStorage.getItem('loggedFarmAppUser'))?.token}`
+  const config = {
+        headers: { Authorization: faketoken },
+      }
+      
+const object = content
+const response = await axios.post(origin + baseUrl, object, config)
+return response.data
+  }
+
+
+  export default {getAll, addNew, setToken}

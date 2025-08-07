@@ -101,8 +101,19 @@ TTNRouter.get('/device_data/:dev_id/:page', userExtractor, async(request, respon
 
     
     const skip = (15*Number(request.params.page))-15
-    const data = await Bucket.find({dev_id: request.params.dev_id}).sort({date_time: -1}).limit(15).skip(skip)
+    try {
+    var data = null
+    data = await Bucket.find({dev_id: request.params.dev_id}).sort({date_time: -1}).limit(15).skip(skip)
+    }catch(error){
+      console.error("error in getting data from Data Base")
+      res.status(500).json({ error: 'Failed to get data from data base' });
+    }
+    if(data){
     return response.json(data).status(200)
+    }
+    else {
+      res.status(500).json({ error: 'Failed to get data from data base' });
+    }
     
 
 

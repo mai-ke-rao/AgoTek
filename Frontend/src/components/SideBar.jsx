@@ -50,10 +50,11 @@ const SideBar = () => {
 
 
 
-
-    <div className="sidebar-link disabled">
+        <Link to='/uredjaji' className='reset-link'>
+    <div className="sidebar-link">
         Uredjaji
     </div>
+    </Link>
 </div>
 
 

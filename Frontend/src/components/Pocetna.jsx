@@ -82,16 +82,17 @@ const Pocetna = () => {
                 </div>
                 </Link>
 
-                <div className='widget disabled'>
+             <Link to='/uredjaji' className='no-link-style'>
+                <div className='widget'>
                 <img src={pcbIcon}></img>
                 <div>
                     <h2>Uredjaji</h2>
                     <br></br>
                     <p>Povezi pametne LoraWAN uredjaje sa The Things Network-om. </p>
                 </div>
-
+             
                 </div>
-
+                 </Link>
 
             </div>
 

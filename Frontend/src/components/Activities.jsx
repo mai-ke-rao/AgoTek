@@ -31,8 +31,14 @@ const Activities = ({chosenParcId}) => {
       });
 
     useEffect(() => {
-
+        //nalazi sve aktinvosti izabrane parcele i setuje aktivnosti sa tom vrednoscu
+        const loggedUserJSON = window.localStorage.getItem('loggedFarmAppUser')
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON)
+       activitiesService.setToken(user.token)
         activitiesService.getAll(chosenParcId).then(activities => dispatch(setActivities(activities)))
+    }
+       
     }, [])
    
     
@@ -167,6 +173,7 @@ switch (formObject['Vrsta aktivnosti']){
     
     const newActivity = await activitiesService.addNew(formObject, formData['Vrsta aktivnosti'])
     dispatch(addActivitiy(newActivity))
+    setShowA(false)
 
     //common validate here, and specific validate (later add)
 
@@ -230,7 +237,7 @@ switch (formObject['Vrsta aktivnosti']){
 
           <div className='border-bottom'>
             
-            <button id="odustani"  className='bar-button'>Odustani</button>
+            <button id="odustani"  className='bar-button' type='button' onClick={() => {setShowA(false)}}>Odustani</button>
             <button id="sacuvaj" className='bar-button' type="submit" disabled={!submitEnable}> Sacuvaj</button>
           </div>
         </form>

@@ -28,28 +28,43 @@ const errorHandler = (error, request, response, next) => {
   next(error)
 }
 const tokenExtractor = (request, response, next) => {
+  try{
   const authorization = request.get('authorization') 
   if (authorization && authorization.startsWith('Bearer ')) 
  {   request.token = authorization.replace('Bearer ', '') 
     
 }
 else{
-  response.status(400).send({ error: 'authrization missing'})
+  request.token = null;
 }
+
   next()
+}catch(e){
+  return response.status(401).send({ error: 'authrization error'})
+}
+
 }
 const userExtractor = async(request, response, next) => {
 
-  logger.info("yoyoyo", request.token)
+  
+
+  try{
+  logger.info("request token is: ", request.token)
   const decodedToken = jwt.verify(request.token, process.env.SECRET) 
   if(!decodedToken.id)
   {
-    response.status(401).send({ error: 'unautharised access' })
+    return response.status(401).send({ error: 'unautharised access' })
   }
 const korisnik = await User.findById(decodedToken.id)
 
 request.user = korisnik
+
+  }catch(e)
+  {
+    return response.status(401).send({ error: 'auth error' })
+  }
 next()
+
 }
 
 module.exports = {
