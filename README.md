@@ -15,7 +15,7 @@ Izazov predstavlja integracija sa nizom različitih uređaja, komunikacionih pro
 koji se koriste u poljoprivredi kao i poboljšanje sigurnosti jer aplikacija zahteva visok nivo dostupnosti i pouzdanosti.\
 
 U narednom periodu želim da omogućim korisnicima:\
-  -Vizualizaciju podataka kroz odabir i prilagođavanje widžeta,\
-  -Da dele podatke sa svojih uređaja drugim korisnicima (komšijama, savetodavcima, investitorima ili osiguravajućim kućama) \
+  -Uvedem validacioju podataka i obezbedim real time podatke putem web socket-a,\
+  -Da dobijajju preporuke od strane ChatGPT preko API za aktivnosti \
   -Integraciju sa ChripStackom i da integracija sa TTN bude robustnija i ergonomičnija
   
