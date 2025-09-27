@@ -27,16 +27,16 @@ Authorization: bearer
 "povrsina": "1.2",
 }
 
-### Create activity of obrada type
+### Create activity of obrada type "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik5pa29sYSIsImlkIjoiNjdlNmY0Y2QyNzY4YzMyYmI5YmMyOGNiIiwiaWF0IjoxNzQzNzYyNDQ5fQ.50EgRRaJLM8_ZBVPSiNBIUMG8fXgXcZXYK44TbBplDQ"
 
 POST http://localhost:3001/api/activities/obrada
 Content-Type:application/json
-Authorization: "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik5pa29sYSIsImlkIjoiNjdlNmY0Y2QyNzY4YzMyYmI5YmMyOGNiIiwiaWF0IjoxNzQzNzYyNDQ5fQ.50EgRRaJLM8_ZBVPSiNBIUMG8fXgXcZXYK44TbBplDQ"
+Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik5pa29sYSIsImlkIjoiNjdlNmY0Y2QyNzY4YzMyYmI5YmMyOGNiIiwiaWF0IjoxNzQ0MDE2MjUwfQ.Biiww4zJ3DFFoJPu4X4kNrP1C0OPzwZC64CUoyjbCfA"
 
     {
         "activityType": "obrada",
-        "datum_od": "11-12-2024",
-        "datum_do": "11-12-2024",
+        "datum_od": "12-12-2024",
+        "datum_do": "12-12-2024",
         "tip_obrade": "oranje",
         "parcel": "67e6f7f8e68483481acb1ad0"
     }
@@ -62,3 +62,21 @@ Authorization: "Bearer NNSXS.523DYXOLFLU5C25C5VYOUIVAJUF5CKDCSB6JWZY.ERBFIWIOA24
     "correlation_ids" : [  "as:downlink:01JRB8MYRJ77TC6PBCEH7ZBAQD" ]      // Correlation identifiers of the message
   }]
 }
+
+
+### Downlink to Meteoscientific
+POST https://console.meteoscientific.com/api/devices/f2a14164e12277d6/queue
+Content-Type:application/json
+Authorization: "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJjaGlycHN0YWNrIiwiaXNzIjoiY2hpcnBzdGFjayIsInN1YiI6ImVmMmI4YzcxLWJjNjMtNDExZi05Mzc3LTVlNmU2MjZiZTRiZCIsInR5cCI6ImtleSJ9.xV8q-KmRj5tYq-YInWJX9U9OdwR6-JoauXk8gRuzhWc"
+
+{
+    "queueItem": {
+      "confirmed": true,
+      "fPort": 28,
+      "data": "AAUABQ==",
+      "isEncrypted": false,
+      "isPending": false,
+      "fCntDown": 0,
+      "expiresAt": null
+    }
+  }

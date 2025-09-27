@@ -3,7 +3,7 @@ const Activity = require('../models/activity')
 const { tokenExtractor, userExtractor } = require('../utils/middleware')
 
 
-
+//rerturns activies for choosen parcel and user id.
 activitiesRouter.get('/:id', userExtractor, async(request, response) => {
    
     try{
