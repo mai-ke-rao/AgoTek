@@ -67,7 +67,7 @@ Authorization: "Bearer NNSXS.523DYXOLFLU5C25C5VYOUIVAJUF5CKDCSB6JWZY.ERBFIWIOA24
 ### Downlink to Meteoscientific
 POST https://console.meteoscientific.com/api/devices/f2a14164e12277d6/queue
 Content-Type:application/json
-Authorization: "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJjaGlycHN0YWNrIiwiaXNzIjoiY2hpcnBzdGFjayIsInN1YiI6ImVmMmI4YzcxLWJjNjMtNDExZi05Mzc3LTVlNmU2MjZiZTRiZCIsInR5cCI6ImtleSJ9.xV8q-KmRj5tYq-YInWJX9U9OdwR6-JoauXk8gRuzhWc"
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJjaGlycHN0YWNrIiwiaXNzIjoiY2hpcnBzdGFjayIsInN1YiI6ImVmMmI4YzcxLWJjNjMtNDExZi05Mzc3LTVlNmU2MjZiZTRiZCIsInR5cCI6ImtleSJ9.xV8q-KmRj5tYq-YInWJX9U9OdwR6-JoauXk8gRuzhWc
 User-Agent: ROOT
 Connection: keep-alive
 
