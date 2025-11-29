@@ -2,22 +2,6 @@ const mongoose = require('mongoose')
 
 //const Base = model('Item', BaseSchema);
 
-const Komentar = new mongoose.Schema({
-    datum_od: {
-        type: String,
-        required: true
-    },
-    datum_do: {
-        type: String,
-        required: true
-    },
-    activityType: {
-        type: String,
-        enum: ["obrada", "djubrenje", "setva/sadnja", "nega useva", "zetva/berba", "komentar"],
-        required: true
-    },
-    komentar: String
-})
 
 const BaseSchema = new mongoose.Schema({
     datum_od: {
@@ -42,6 +26,18 @@ const BaseSchema = new mongoose.Schema({
   discriminatorKey: 'kind', // default: __t
 });
 const Base = mongoose.model('Item', BaseSchema);
+
+
+const Komentar = Base.discriminator('komentar', new mongoose.Schema({
+  datum_od: { type: String, required: true },
+  datum_do: { type: String, required: true },
+  activityType: {
+    type: String,
+    enum: ["obrada", "djubrenje", "setva/sadnja", "nega useva", "zetva/berba", "komentar"],
+    required: true
+  },
+  komentar: String
+}));
 
 // Child: Article
 const Obrada = Base.discriminator('obrada', new mongoose.Schema)({
@@ -125,7 +121,7 @@ const ZetvaBerba  = Base.discriminator('zetvaBerba', new mongoose.Schema)({
     protein: Number,
 })
 
-const Analiza = new mongoose.Schema({
+const Analiza =  Base.discriminator('analiza', new mongoose.Schema)({
         datum_od: {
         type: String,
         required: true

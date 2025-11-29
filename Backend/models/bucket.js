@@ -5,8 +5,7 @@ const bucketSchema = new mongoose.Schema({
     name: String,
     value: mongoose.Schema.Types.Mixed,
     date_time: String,
-    dev_id: String
-
+    dev_id: String,
     
 })
 

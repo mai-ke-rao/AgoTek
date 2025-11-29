@@ -95,15 +95,32 @@ TTNRouter.get('/device_list', userExtractor, async(request, response) => {
 
 
 //getting the device data in bathces of 15 (hopefully newer to older)
+
 TTNRouter.get('/device_data/:dev_id/:page', userExtractor, async(request, response) => {
     
     
-
+  
     
     const skip = (15*Number(request.params.page))-15
     try {
+    //we are checking if the user has access to the device that dev_id was provided for
+    const dev = await Device.find({dev_id: request.params.dev_id})
+    }
+    catch(error){
+      console.error("error in getting data from Data Base")
+      res.status(500).json({ error: 'Failed to get data from data base' });
+    }
+      if(!dev.user  == request.user.id.toString())
+{
+  console.log("dev.user: ", dev.user, "/n request.user.id.toString():", request.user.id.toString());
+  
+}
+else{
+
+
     var data = null
-    data = await Bucket.find({dev_id: request.params.dev_id}).sort({date_time: -1}).limit(15).skip(skip)
+    try{
+    data = await Bucket.find({device: request.params.dev_id}).sort({date_time: -1}).limit(15).skip(skip)
     }catch(error){
       console.error("error in getting data from Data Base")
       res.status(500).json({ error: 'Failed to get data from data base' });
@@ -115,13 +132,14 @@ TTNRouter.get('/device_data/:dev_id/:page', userExtractor, async(request, respon
       res.status(500).json({ error: 'Failed to get data from data base' });
     }
     
-
+  }
 
 })
 
 
 
 TTNRouter.post('/send-downlink', userExtractor, async (req, res) => {
+  //I need to avoid getting all this info from request. this is something I might do for chripstack as well
     const { dev_id, app_id, hook_id, downlinkPayload } = req.body;
     logger.info("we are rolling")
     const url = `https://eu1.cloud.thethings.network/api/v3/as/applications/${app_id}/webhooks/${hook_id}/devices/${dev_id}/down/push`;
