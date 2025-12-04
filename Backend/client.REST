@@ -4,9 +4,9 @@ Content-Type:application/json
 Accept: application/json
 
 {
-"username":"Nikola",
-"name":"Nikola",
-"password":"Nikola"
+"username":"test",
+"name":"test",
+"password":"test"
 }
 ###Login
 POST http://localhost:3001/api/login
@@ -82,3 +82,49 @@ Connection: keep-alive
       "expiresAt": null
     }
   }
+
+### ACTIVTIES TESTING
+
+POST http://localhost:3001/api/activities/
+Content-Type:application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik5pa29sYSIsImlkIjoiNjdlNmY0Y2QyNzY4YzMyYmI5YmMyOGNiIiwiaWF0IjoxNzQ0MDE2MjUwfQ.Biiww4zJ3DFFoJPu4X4kNrP1C0OPzwZC64CUoyjbCfA
+
+    {
+        "activityType": "djubrenje",
+        "cena_repromaterijala_h": 200,
+        "tip_djubrenja": "predsetveno",
+        "datum_od": "09-12-2024",
+        "datum_do": "09-12-2024",
+        "parcel": "67e6f7f8e68483481acb1ad0"
+    }
+
+###Obrada
+POST http://localhost:3001/api/activities/
+Content-Type:application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik5pa29sYSIsImlkIjoiNjdlNmY0Y2QyNzY4YzMyYmI5YmMyOGNiIiwiaWF0IjoxNzQ0MDE2MjUwfQ.Biiww4zJ3DFFoJPu4X4kNrP1C0OPzwZC64CUoyjbCfA
+
+    {
+        "activityType": "obrada",
+        "datum_od": "10-12-2024",
+        "datum_do": "10-12-2024",
+        "tip_obrade": "drljanje",
+        "parcel": "67e6f7f8e68483481acb1ad0"
+    }
+
+###Dev_data auth check
+GET http://localhost:3001/api/TTN/device_data/mojuredjajsafaksa/2
+Content-Type:application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkFsZWtzYW5kYXIiLCJpZCI6IjY4ZTI5YTk3YjYxNTM5MmI5OGM0YjkyZSIsImlhdCI6MTc2NDY3OTIyNn0.JhNAsxuI1otwcBvydFxCS03xDiMaw8dDpMgK2SOKdIQ
+
+
+###Creating new device
+
+POST http://localhost:3001/api/TTN/connector
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QiLCJpZCI6IjY5MzA3YzQ4MWRiMTVhNDdlODc0MWU3NiIsImlhdCI6MTc2NDc4NTY4NX0.sEpbkC5_SkkXgHfDJOEWW8DbiC1dPtNEwKNhxNgQh9Q
+
+{
+ "apikey":"NNSXS.523DYXOLSCKDCSB6JWZY.ERBFIWIOA24ALXZFLKTTDRD37ADRA77VRK7WMOUMEIBHYBKEM40Q",
+ "dev_id": "mojuredjajsafaksa",
+  "name": "proba"
+}

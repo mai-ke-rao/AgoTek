@@ -13,13 +13,35 @@ const fetch = require('node-fetch');
 //getting data from ttn
 TTNRouter.post('/', async(request, response) => {
 
+
+
     if(Object.is(undefined, request.body.uplink_message.decoded_payload))
     {
-            return
+      console.log("yo bruder ich bin awacht");      
+      return
     }
     const data = request.body.uplink_message.decoded_payload
     const dev_id = request.body.end_device_ids.device_id
+    console.log("yo bruder ich bin awacht");
+    
+    const dev = await Device.findOne({dev_id: dev_id})
+  
+    
+    if(!dev){
 
+      response.status(404).json({ error: "Not found" });
+
+    }
+    
+    
+    if(!dev.downpush){
+      console.log(request.headers);
+      
+      dev.downpush = request.headers['x-downlink-push']
+      console.log("Downpush added", request.headers['x-downlink-push']);
+      
+    }
+    await dev.save();
 
     if(!data){
 
@@ -56,8 +78,6 @@ TTNRouter.post('/connector', userExtractor, async(request, response) => {
 const device = new Device({
     name: body.name,
     apikey_encrypted: apikey_encrypted,
-    app_id: body.app_id,
-    hook_id: body.hook_id,
     dev_id: body.dev_id,
     user: request.user.id
   
@@ -105,34 +125,39 @@ TTNRouter.get('/device_data/:dev_id/:page', userExtractor, async(request, respon
     try {
     //we are checking if the user has access to the device that dev_id was provided for
     const dev = await Device.find({dev_id: request.params.dev_id})
-    }
-    catch(error){
-      console.error("error in getting data from Data Base")
-      res.status(500).json({ error: 'Failed to get data from data base' });
-    }
-      if(!dev.user  == request.user.id.toString())
+    //dev is in array, this should be cleaned
+    if(!(dev[0].user  == request.user.id.toString()))
 {
-  console.log("dev.user: ", dev.user, "/n request.user.id.toString():", request.user.id.toString());
-  
+  console.log("dev is: ", dev[0].user, "/n request.user.id.toString():", request.user.id.toString());
+   response.status(403).json({ error: 'Forbidden' });
 }
 else{
 
 
-    var data = null
-    try{
-    data = await Bucket.find({device: request.params.dev_id}).sort({date_time: -1}).limit(15).skip(skip)
-    }catch(error){
-      console.error("error in getting data from Data Base")
-      res.status(500).json({ error: 'Failed to get data from data base' });
-    }
+    
+   
+      console.log("Auth for dev is true");
+      console.log("dev.user: ", dev[0].user, "/n request.user.id.toString():", request.user.id.toString());
+      
+    const data = await Bucket.find({dev_id: request.params.dev_id}).sort({date_time: -1}).limit(15).skip(skip)
+   
     if(data){
+      console.log("data", data);
+      
     return response.json(data).status(200)
     }
     else {
-      res.status(500).json({ error: 'Failed to get data from data base' });
+      response.status(500).json({ error: 'Failed to get data from data base' });
     }
     
+  
   }
+}
+    catch(error){
+      console.error("error in getting data from Data Base")
+      response.status(500).json({ error: 'Failed to get data from data base' });
+    }
+      
 
 })
 
@@ -140,16 +165,20 @@ else{
 
 TTNRouter.post('/send-downlink', userExtractor, async (req, res) => {
   //I need to avoid getting all this info from request. this is something I might do for chripstack as well
-    const { dev_id, app_id, hook_id, downlinkPayload } = req.body;
-    logger.info("we are rolling")
-    const url = `https://eu1.cloud.thethings.network/api/v3/as/applications/${app_id}/webhooks/${hook_id}/devices/${dev_id}/down/push`;
-  
+    const { dev_id, downlinkPayload } = req.body;
+   
+   
+    console.log("downlink payload", downlinkPayload);
+    
     
     const device = await Device.find({user: req.user.id.toString(), dev_id: dev_id.toString()})
-    logger.info("key from device", device[0].apikey_encrypted)
    
-
+   
+ const url = device[0].downpush;
+  console.log("url is", url);
     const apikey = jwt.verify(device[0].apikey_encrypted, process.env.SECRET)
+    
+    
     try {
         
       const response = await fetch(url, {
@@ -159,12 +188,12 @@ TTNRouter.post('/send-downlink', userExtractor, async (req, res) => {
           'Content-Type': 'application/json',
           'User-Agent': 'my-app/1.0'
         },
-        body: JSON.stringify({ downlinks: [downlinkPayload] })
+        body: JSON.stringify({  downlinks: [downlinkPayload] })
       });
   
       const result = await response;
-      logger.info("response status", result['Symbol(Response internals)'].status)
-      res.status(200)
+     // logger.info("response status", result['Symbol(Response internals)'].status)
+      res.status(200).json(result)
     } catch (error) {
       console.error('Error pushing to TTN:', error);
       res.status(500).json({ error: 'Failed to send downlink' });

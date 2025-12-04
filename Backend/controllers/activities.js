@@ -7,8 +7,9 @@ const mongoose = require('mongoose');
 //rerturns activies for choosen parcel and user id.
 activitiesRouter.get('/:id', userExtractor, async(request, response) => {
    
+   
     try{
-    const activities = await Activity.find({user: request.user.id.toString()
+    const activities = await Base.find({user: request.user.id.toString()
         , parcel: request.params.id})
         response.json(activities)
         console.log("request params: ", request.params.id);
@@ -47,7 +48,8 @@ const {
   NegaUseva,
   ZetvaBerba,
   Komentar,   
-  Analiza,    
+  Analiza,
+  Base    
 } = require('../models/activity');
 
 

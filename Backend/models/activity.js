@@ -1,7 +1,5 @@
 const mongoose = require('mongoose')
 
-//const Base = model('Item', BaseSchema);
-
 
 const BaseSchema = new mongoose.Schema({
     datum_od: {
@@ -40,7 +38,7 @@ const Komentar = Base.discriminator('komentar', new mongoose.Schema({
 }));
 
 // Child: Article
-const Obrada = Base.discriminator('obrada', new mongoose.Schema)({
+const Obrada = Base.discriminator('obrada', new mongoose.Schema({
     tip_obrade: {
         type: String,
         enum: ["zaoravanje zetvenih ostataka", "oranje", "zatvaranje zimske brazde", "tanjiranje", "drljanje", "setvospremanje", "podrivanje", "rigolovanje", "freziranje", "kultiviranje", "razrivanje", "ostalo"],
@@ -48,9 +46,10 @@ const Obrada = Base.discriminator('obrada', new mongoose.Schema)({
     },
     dubina: Number,
   
-});
+})
+);
 
-const Djubrenje = Base.discriminator('djubrenje', new mongoose.Schema)({
+const Djubrenje = Base.discriminator('djubrenje', new mongoose.Schema({
     cena_repromaterijala_h: Number,
     tip_djubrenja: {type: String, enum: ["osnovno", "predsetveno", "dopunsko", "fertigacija"], required: true},
     pojedinacno_djubrivo: [{
@@ -62,8 +61,8 @@ const Djubrenje = Base.discriminator('djubrenje', new mongoose.Schema)({
        
     }]
 })
-
-const SetvaSadnja = Base.discriminator('setvaSadnja', new mongoose.Schema)({
+);
+const SetvaSadnja = Base.discriminator('setvaSadnja', new mongoose.Schema({
      cena_repromaterijala_h: Number,
     vrsta_proizvodnje:{
         type: String,
@@ -85,8 +84,9 @@ const SetvaSadnja = Base.discriminator('setvaSadnja', new mongoose.Schema)({
         required: true
     },
 })
+);
 
-const NegaUseva = Base.discriminator('negaUseva', new mongoose.Schema)({
+const NegaUseva = Base.discriminator('negaUseva', new mongoose.Schema({
     cena_repromaterijala_h: Number,
     agrotehnicka_mera_cbox: Boolean,
     agrotehnicka_mera: {
@@ -110,8 +110,9 @@ const NegaUseva = Base.discriminator('negaUseva', new mongoose.Schema)({
     }]
 
 })
+);
 
-const ZetvaBerba  = Base.discriminator('zetvaBerba', new mongoose.Schema)({
+const ZetvaBerba  = Base.discriminator('zetvaBerba', new mongoose.Schema({
     prinos_h: Number,
     vlaga: Number,
     primese: Number,
@@ -120,8 +121,8 @@ const ZetvaBerba  = Base.discriminator('zetvaBerba', new mongoose.Schema)({
     ulje: Number,
     protein: Number,
 })
-
-const Analiza =  Base.discriminator('analiza', new mongoose.Schema)({
+);
+const Analiza =  Base.discriminator('analiza', new mongoose.Schema({
         datum_od: {
         type: String,
         required: true
@@ -162,6 +163,7 @@ const Analiza =  Base.discriminator('analiza', new mongoose.Schema)({
     komentar: String
     }
 )
+);
 
 BaseSchema.set('toJSON', {
     transform:(document, returnedObject) => {
@@ -171,7 +173,7 @@ BaseSchema.set('toJSON', {
       }
 })
 
-module.exports =  {Obrada, ZetvaBerba, NegaUseva ,SetvaSadnja ,Djubrenje, Komentar ,Analiza ,BaseSchema}
+module.exports =  {Obrada, ZetvaBerba, NegaUseva ,SetvaSadnja ,Djubrenje, Komentar ,Analiza ,Base}
  
 
 

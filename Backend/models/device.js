@@ -5,8 +5,7 @@ const deviceSchema = new mongoose.Schema({
     name: String,
     apikey_encrypted: String,
     dev_id: String,
-    app_id: String,
-    hook_id: String,
+    downpush: String,
     user: {type: mongoose.Schema.Types.ObjectId, ref: 'User'}
 })
 
