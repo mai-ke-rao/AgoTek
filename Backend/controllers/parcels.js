@@ -10,6 +10,10 @@ const { tokenExtractor, userExtractor } = require('../utils/middleware')
 
 parcelsRouter.get('/', userExtractor, async(request, response) => {
     //Find wont do.
+    console.log("req.user.id ", request.user.id);
+    if(!request.user.id) 
+        return response.status(401).end()
+
     const parcels = await Parcel.find({user: request.user.id.toString()})
     response.json(parcels)
 } )

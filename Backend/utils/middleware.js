@@ -44,33 +44,75 @@ else{
 }
 
 }
+
+              const getUserFromToken = async (token) => {
+
+              const decodedToken = jwt.verify(token, process.env.SECRET) 
+                if(!decodedToken.id)
+                {
+                  return response.status(401).send({ error: 'unautharised access' })
+                }
+              
+              const korisnik = await User.findById(decodedToken.id)
+              return korisnik
+              };
+
+
 const userExtractor = async(request, response, next) => {
 
   
 
   try{
   logger.info("request token is: ", request.token)
-  const decodedToken = jwt.verify(request.token, process.env.SECRET) 
-  if(!decodedToken.id)
-  {
-    return response.status(401).send({ error: 'unautharised access' })
-  }
-const korisnik = await User.findById(decodedToken.id)
+  
 
-request.user = korisnik
+request.user = await getUserFromToken(request.token)
+  logger.info("request user is: ", request.user)
+  logger.info("request user.id is: ", request.user.id)
+  logger.info("request user._id is: ", request.user._id)
 
+
+next()
   }catch(e)
   {
     return response.status(401).send({ error: 'auth error' })
   }
-next()
+
 
 }
+
+const socketAuth = async (socket, next) => {
+  try {
+    
+     console.log('🔐 Socket auth - handshake.auth:', socket.handshake.auth);
+    const token = socket.handshake.auth?.token;
+
+        if (!token) {
+      console.log('❌ No token in handshake.auth');
+      return next(new Error('Unauthorized'));
+    }
+
+    const user = await getUserFromToken(token);
+
+    if (!user) {
+      console.log('❌ No user for token');
+      return next(new Error('Unauthorized'));
+    }
+
+      console.log('✅ Authenticated socket user:', user.id);
+    socket.user = user; // like request.user
+    
+    next();
+  } catch (err) {
+    next(new Error('Unauthorized'));
+  }
+};
 
 module.exports = {
   requestLogger,
   unknownEndpoint,
   errorHandler,
  tokenExtractor,
- userExtractor
+ userExtractor,
+ socketAuth
 }

@@ -4,23 +4,26 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const config = require('../utils/config')
 const Device = require('../models/device')
+const Chirpdev = require('../models/chripdev')
 const Bucket = require('../models/bucket')
 const { tokenExtractor, userExtractor } = require('../utils/middleware')
 const fetch = require('node-fetch'); 
 
 
 
+
 //getting data from ttn
 TTNRouter.post('/', async(request, response) => {
 
-
+try {
+    const io = request.app.get('io'); // <— get Socket.IO instance
 
     if(Object.is(undefined, request.body.uplink_message.decoded_payload))
     {
       console.log("yo bruder ich bin awacht");      
       return
     }
-    const data = request.body.uplink_message.decoded_payload
+    const data = request.body.uplink_message?.decoded_payload
     const dev_id = request.body.end_device_ids.device_id
     console.log("yo bruder ich bin awacht");
     
@@ -29,7 +32,7 @@ TTNRouter.post('/', async(request, response) => {
     
     if(!dev){
 
-      response.status(404).json({ error: "Not found" });
+      return response.status(404).json({ error: "Not found" });
 
     }
     
@@ -45,7 +48,7 @@ TTNRouter.post('/', async(request, response) => {
 
     if(!data){
 
-       return response.status(200)
+       return response.sendStatus(200)
     }
     logger.info("uplink data is: ", data)
     var datetime = new Date();
@@ -62,9 +65,18 @@ TTNRouter.post('/', async(request, response) => {
     }
     
     // Insert entire json batch
-    await Bucket.insertMany(dataArray);
+     const insertedDocs = await Bucket.insertMany(dataArray);
+
+    io.emit('uplink', {
+      dev_id,
+      rows: insertedDocs,
+    });
     
-    response.status(200)
+    return response.sendStatus(200)
+    } catch (err) {
+    console.error(err);
+    return response.sendStatus(500);
+  }
 })
 
 
@@ -103,12 +115,18 @@ if(Object.is(undefined, device.name || device.apikey_hash)){
 //Shouldn't I do decrytion here?
 TTNRouter.get('/device_list', userExtractor, async(request, response) => {
 
-  
+  if(!request.user.id)
+    return response.status(401).end()
     const devices = await Device.find({user: request.user.id.toString()})
+    const chirpDev = await Chirpdev.find({user: request.user.id.toString()})
     devices.forEach(el => {
         el.apikey_encrypted = ""
     })
-    response.status(200).json(devices)
+     chirpDev.forEach(el => {
+        el.apikey_encrypted = ""
+    })
+    //just concat chirpDev array
+    response.status(200).json(devices.concat(chirpDev))
 })
 
 

@@ -2,7 +2,7 @@ import { useState, useEffect }  from 'react'
 import ReactDOM from 'react-dom/client'
 import {
   BrowserRouter as Router,
-  Routes, Route, Link, useNavigate, Navigate
+  Routes, Route, Link, Navigate
 } from 'react-router-dom'
 import NavBar from './components/NavBar'
 import Pocetna from './components/Pocetna'
@@ -16,7 +16,7 @@ import Activities from './components/Activities'
 import Weather from './components/Weather'
 import Devices from './components/Devices'
 import DeviceMenu from './components/DeviceMenu'
-
+import Integrations from './components/Integrations'
 
 const Home = () => (
   <div> <h2>TKTL notes app</h2> </div>
@@ -28,6 +28,7 @@ const App = () => {
   const [user, setUser] = useState(JSON.parse(window.localStorage.getItem('loggedFarmAppUser')))
   const [parcels, setParcels] = useState([])
   const [chosenParcId, setChosenParcId] = useState(JSON.parse(window.localStorage.getItem('chosenParcelId')))
+  const [deviceList, setDeviceList] = useState([])
   const [chosenDev, setChosenDev] = useState(
     {
       name: "",
@@ -83,8 +84,9 @@ console.log("user", user);
                   <Route path="/parcele" element={<Parcele parcels={parcels} setParcels={setParcels} setChosenParcId={setChosenParcId}/>} />
                   <Route path="/aktivnosti" element={<Activities chosenParcId={chosenParcId}/>} />
                   <Route path="/vremenska" element={<Weather/>}/>
-                  <Route path="/uredjaji" element={<Devices setChosenDev={setChosenDev}/>}/>
+                  <Route path="/uredjaji" element={<Devices setChosenDev={setChosenDev} deviceList={deviceList} setDeviceList={setDeviceList}/>}/>
                   <Route path="/device_menu" element={<DeviceMenu chosenDev={chosenDev}/>}/>
+                  <Route path="/integrations" element={<Integrations  deviceList={deviceList} setDeviceList={setDeviceList}/>}/>
 
                 </Routes>
           

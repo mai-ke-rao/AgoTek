@@ -2,151 +2,29 @@
 import SideBar from './SideBar'
 import './Devices.css'
 import devicesSerivce from '../services/devices'
-import { useState, useEffect } from 'react'
-import closeIcon from '../assets/cancel.png'
+
+import { useEffect } from 'react'
 import DeviceMenu from './DeviceMenu'
 import {
     useNavigate
  } from 'react-router-dom'
+import CreateTTN from './CreateTTN'
 
 
 
-const FormDialog = ({setShowDialog, devList, setDeviceList}) => {
-
-    const [formData, setFormData] = useState(
-        {
-            name:"",
-            apikey:"",
-            app_id: "",
-            hook_id: "",
-            dev_id: "",
-        }
-    )
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-        
-        const newDevice = await devicesSerivce.addNew(formData)
-        setDeviceList([...devList, newDevice])
-        console.log("device list in hanlde submit: ",devList);
-        
-    }
-
-
-    const hadnleChange = (event) => {
-        const { name , value } = event.target;
-        setFormData((prevState) =>  ({ ...prevState, [name]: value}))
-    }
-    
-    return(
-            <div className='dialog'>
-                <div className='dialog-container'>
-                    <div className='loader-container'>
-                        <div>
-                            <div className='flex full-width justify-right' onClick={() => setShowDialog(false)}>
-                                <img src={closeIcon}></img>
-                                </div>
-                                <h2>Dodaj novi uredjaj</h2><br></br>
-                                <br></br><br></br>
-                            <div className='flex column gap-5'>
-                                <form className='form-container full-width' onSubmit={handleSubmit}>
-                            <div className='input-container'>
-                                <div className='display-block'>
-                                <div className='input-item'>
-                                    <div className='label-container'>
-                                        <label htmlFor='name'><strong>Ime</strong> </label>
-                                    </div>
-                                    <div className='.iui-input-container'>
-                                        <input type='text' name='name' value={formData['name']} onChange={hadnleChange}></input>
-                                    </div>
-                                    </div>
-                                    </div>
-                                    </div>
-
-                                    <div className='input-container'>
-                                    <div className='display-block'>
-                                    <div className='input-item'>
-                                    <div className='label-container'>
-                                        <label htmlFor='name'><strong>apikey</strong> </label>
-                                    </div>
-                                    <div className='.iui-input-container'>
-                                        <input type='text' name='apikey' value={formData['apikey']} onChange={hadnleChange}></input>
-                                    </div>
-                                    </div>
-                                    </div>
-                                    </div>
-
-                                    <div className='input-container'>
-                                    <div className='display-block'>
-                                    <div className='input-item'>
-                                    <div className='label-container'>
-                                        <label htmlFor='app_id'><strong>app id</strong> </label>
-                                    </div>
-                                    <div className='.iui-input-container'>
-                                        <input type='text' name='app_id' value={formData['app_id']} onChange={hadnleChange}></input>
-                                    </div>
-                                    </div>
-                                    </div>
-                                    </div>
-
-                                    <div className='input-container'>
-                                    <div className='display-block'>
-                                    <div className='input-item'>
-                                    <div className='label-container'>
-                                        <label htmlFor='name'><strong>hook id</strong> </label>
-                                    </div>
-                                    <div className='.iui-input-container'>
-                                        <input type='text' name='hook_id' value={formData['hook_id']} onChange={hadnleChange}></input>
-                                    </div>
-                                    </div>
-</div>
-                                    </div>
-
-
-                                    <div className='input-container'>
-                                <div className='display-block'>
-                                    <div className='input-item'>
-                                    <div className='label-container'>
-                                        <label htmlFor='dev_id'><strong>End device ID</strong> </label>
-                                    </div>
-                                    <div className='.iui-input-container'>
-                                        <input type='text' name='dev_id' value={formData['dev_id']} onChange={hadnleChange}></input>
-                                    </div>
-                                    </div>
-                                    </div>
-                                    </div>
-
-                        
-
-                                    
-                                    <div className='bar'>
-                <button className='bar-button' type="submit"> Dodaj uredjaj </button>
-                </div>
-
-                                    
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-            </div>
-
-    )
-}
-
-const Devices = ({setChosenDev}) => {
+const Devices = ({setChosenDev, deviceList, setDeviceList}) => {
     let navigate = useNavigate();
-    const [deviceList, setDeviceList] = useState([])
+    
     useEffect(() =>{
         devicesSerivce.getAll().then(devList => 
             setDeviceList([...devList])
         )
-    }, [])
+    }, [setDeviceList])
 
 console.log("dev list: ", deviceList);
 
 
-const [showDialog, setShowDialog] = useState(false)
+
 
     return(
         <div>
@@ -156,7 +34,7 @@ const [showDialog, setShowDialog] = useState(false)
             
             <h1>Uredjaji</h1>  
                 <div className='bar'>
-                <button className='bar-button' onClick={()=>setShowDialog(true)}> Dodaj uredjaj </button>
+                <button className='bar-button' onClick={()=>{ navigate('/integrations')}}> Dodaj uredjaj </button>
                 </div>
             
             <table>
@@ -189,7 +67,7 @@ const [showDialog, setShowDialog] = useState(false)
             </table>
         </div>
         </div>
-        {showDialog? <FormDialog setShowDialog={setShowDialog} devList={deviceList} setDeviceList={setDeviceList}/>:null}
+        
 
             </div>
 

@@ -67,7 +67,7 @@ Authorization: "Bearer NNSXS.523DYXOLFLU5C25C5VYOUIVAJUF5CKDCSB6JWZY.ERBFIWIOA24
 ### Downlink to Meteoscientific
 POST https://console.meteoscientific.com/api/devices/f2a14164e12277d6/queue
 Content-Type:application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJjaGlycHN0YWNrIiwiaXNzIjoiY2hpcnBzdGFjayIsInN1YiI6ImVmMmI4YzcxLWJjNjMtNDExZi05Mzc3LTVlNmU2MjZiZTRiZCIsInR5cCI6ImtleSJ9.xV8q-KmRj5tYq-YInWJX9U9OdwR6-JoauXk8gRuzhWc
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJjaGlycHN0YWNrIiwiaXNzIjoiY2hpcnBzdGFjayIsInN1YiI6IjQ4MTAwYWJkLTM0YjMtNGYxMi1hMTM5LTExYzc0MjZlMWI4NSIsInR5cCI6ImtleSJ9.GjSuApeqpqZAnHrwJixDUrHGVSHz20-4PmMHmTDg_cs
 User-Agent: ROOT
 Connection: keep-alive
 
@@ -116,8 +116,11 @@ GET http://localhost:3001/api/TTN/device_data/mojuredjajsafaksa/2
 Content-Type:application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkFsZWtzYW5kYXIiLCJpZCI6IjY4ZTI5YTk3YjYxNTM5MmI5OGM0YjkyZSIsImlhdCI6MTc2NDY3OTIyNn0.JhNAsxuI1otwcBvydFxCS03xDiMaw8dDpMgK2SOKdIQ
 
-
-###Creating new device
+###Get Parcels
+GET  http://localhost:3001/api/parcels
+Content-Type:application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QiLCJpZCI6IjY5MzA3YzQ4MWRiMTVhNDdlODc0MWU3NiIsImlhdCI6MTc2NDc4NTY4NX0.sEpbkC5_SkkXgHfDJOEWW8DbiC1dPtNEwKNhxNgQh9Q
+###Creating new TTN device
 
 POST http://localhost:3001/api/TTN/connector
 Content-Type: application/json
@@ -127,4 +130,28 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc
  "apikey":"NNSXS.523DYXOLSCKDCSB6JWZY.ERBFIWIOA24ALXZFLKTTDRD37ADRA77VRK7WMOUMEIBHYBKEM40Q",
  "dev_id": "mojuredjajsafaksa",
   "name": "proba"
+}
+
+
+###Creating new Chripstack device
+
+POST http://localhost:3001/api/Chirpstack/connector
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QiLCJpZCI6IjY5MzA3YzQ4MWRiMTVhNDdlODc0MWU3NiIsImlhdCI6MTc2NDc4NTY4NX0.sEpbkC5_SkkXgHfDJOEWW8DbiC1dPtNEwKNhxNgQh9Q
+
+{
+ "apikey":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJjaGlycHN0YWNrIiwiaXNzIjoiY2hpcnBzdGFjayIsInN1YiI6IjQ4MTAwYWJkLTM0YjMtNGYxMi1hMTM5LTExYzc0MjZlMWI4NSIsInR5cCI6ImtleSJ9.GjSuApeqpqZAnHrwJixDUrHGVSHz20-4PmMHmTDg_cs",
+ "dev_eui": "f2a14164e12277d6",
+  "name": "ChripDevice 01"
+}
+
+###Sending downlink with Chripstack device
+
+POST http://localhost:3001/api/Chirpstack/send-downlink
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QiLCJpZCI6IjY5MzA3YzQ4MWRiMTVhNDdlODc0MWU3NiIsImlhdCI6MTc2NDc4NTY4NX0.sEpbkC5_SkkXgHfDJOEWW8DbiC1dPtNEwKNhxNgQh9Q
+
+{
+    "dev_eui": "f2a14164e12277d6",
+    "downlinkPayload": "AQQABQ=="
 }

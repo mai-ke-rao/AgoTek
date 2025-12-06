@@ -182,7 +182,6 @@ td{
     position: sticky;
     top: 0px;
     left: 0px;
-    background-color: rgb(255, 255, 255);
     z-index: 2;
     vertical-align: middle;
 }

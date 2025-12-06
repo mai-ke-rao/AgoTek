@@ -1,6 +1,6 @@
 import axios from 'axios'
 const origin = 'http://localhost:3001'
-const baseUrl = '/api/TTN'
+const baseUrl = '/api/Chirpstack'
 import { encode as base64_encode} from 'base-64';
 let token = null
 
@@ -12,18 +12,6 @@ const setToken = newToken => {
 
 
 
-const getAll = () => {
-
-  const path = '/device_list'
-
-  
-  const token = `Bearer ${JSON.parse(window.localStorage.getItem('loggedFarmAppUser'))?.token}`
-  const config = {
-    headers: { Authorization: token },
-  }
-  const request = axios.get(origin+baseUrl+path, config)
-  return request.then(response => response.data)
-}
 
 const addNew = async (content) => {
 const path = "connector"
@@ -36,18 +24,7 @@ const response = await axios.post(origin + baseUrl + "/" + path, object, config)
 return response.data
 }
 
-const getDataPage = (dev_id, page) => {
 
-const path = '/device_data/'
- const token = `Bearer ${JSON.parse(window.localStorage.getItem('loggedFarmAppUser'))?.token}`
-const config = {
-  headers: { Authorization: token },
-}
-
-const request = axios.get(origin+baseUrl+path+dev_id+"/"+page, config)
-  return request.then(response => response.data)
-
-}
 
 
 const sendDownlink = (dev, payload) => {
@@ -64,12 +41,9 @@ const sendDownlink = (dev, payload) => {
   const object = 
   {
     
-    dev_id:  dev.dev_id,
-    downlinkPayload: {
-      frm_payload: b64Payload,
-      f_port: 1,
-      priority: 'NORMAL'
-    }
+    dev_eui:  dev.dev_eui,
+    downlinkPayload: b64Payload
+    
   }
 
 
@@ -78,4 +52,4 @@ const sendDownlink = (dev, payload) => {
 }
 
 
-export default {setToken, getAll, getDataPage, addNew, sendDownlink}
+export default {setToken, addNew, sendDownlink}

@@ -149,7 +149,7 @@ img{
 }
 
 table{
-    background-color: var(--fond-biljaka-istackani-deo);
+    
     margin-left: 55px;
     margin-top: 70px;
     width: 1200px;
@@ -182,8 +182,7 @@ td{
     position: sticky;
     top: 0px;
     left: 0px;
-    background-color: rgb(255, 255, 255);
-    z-index: 2;
+      z-index: 2;
     vertical-align: middle;
 }
 
@@ -210,4 +209,32 @@ tr{
 
 .middle-margin{
     margin-left: 33vw;
+}
+
+ .rows {
+    /*line-height: 40px;*/
+   /* margin-right: 2rem;*/
+   
+   transition: background 0.8s;
+   background-position: center;
+   cursor: pointer;
+   margin-top: 8px;
+    background: white;
+  }
+
+.new-row {
+  animation: highlightFade 2.5s ease-out;
+  background-color: #ffeaa7;
+}
+
+@keyframes highlightFade {
+  0% {
+    background-color: #ffd54f;
+  }
+  40% {
+    background-color: #ffeaa7;
+  }
+  100% {
+    background-color: transparent;
+  }
 }
