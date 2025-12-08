@@ -8,7 +8,7 @@ import closeIcon from '../assets/cancel.png'
 import {
     Link
  } from 'react-router-dom'
-
+import Notification from './Notification'
 
 
 
@@ -17,10 +17,20 @@ const Parcele = ({parcels, setParcels, setChosenParcId}) => {
 
     
 const [showDialog, setShowDialog] = useState(false)
- 
+const [showNotification, setShowNotification] = useState(false); 
+
     
 
+ useEffect(() => {
+    if (!showNotification) return;
 
+    const timer = setTimeout(() => {
+      setShowNotification(false);
+    }, 5000); 
+
+    //  Cleanup to prevent memory leaks
+    return () => clearTimeout(timer);
+  }, [showNotification])
 
  const choiceHandler = (parcId) => {
 
@@ -48,6 +58,7 @@ const [showDialog, setShowDialog] = useState(false)
              <div className='bar'>
                 <button className='bar-button' onClick={()=>setShowDialog(true)}> Dodaj parcelu </button>
                 </div>
+                {showNotification && (<Notification message={"Uspesno kreirana parcela"} mistake={false}/>)}
             <div className='widget-page'>
             {parcels.map(parc =>
                             
@@ -83,14 +94,14 @@ const [showDialog, setShowDialog] = useState(false)
              </div>
 
         </div>
-           {showDialog? <FormDialog setShowDialog={setShowDialog} parcels={parcels} setParcels={setParcels}/>:null}
+           {showDialog? <FormDialog setShowDialog={setShowDialog} parcels={parcels} setParcels={setParcels} setShowNotification={setShowNotification}/>:null}
         </div>
     )
 }
 
 
 
-const FormDialog = ({setShowDialog, parcels, setParcels}) => {
+const FormDialog = ({setShowDialog, parcels, setParcels, setShowNotification}) => {
 
     const [formData, setFormData] = useState(
         {
@@ -104,8 +115,13 @@ const FormDialog = ({setShowDialog, parcels, setParcels}) => {
         event.preventDefault();
         
         const newParcel = await parcelService.addNew(formData)
-        setParcels([...parcels, newParcel])
-        console.log("device list in hanlde submit: ",devList);
+        if(newParcel){
+            setShowNotification(true)
+            setParcels([...parcels, newParcel])
+        
+        }
+        
+        setShowDialog(false)
         
     }
 
@@ -174,7 +190,7 @@ const FormDialog = ({setShowDialog, parcels, setParcels}) => {
 
                                     
                                     <div className='bar'>
-                <button className='bar-button' type="submit"> Dodaj parcelu </button>
+                <button className='bar-button' type="submit" > Dodaj parcelu </button>
                 </div>
 
                                     

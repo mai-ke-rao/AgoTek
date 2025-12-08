@@ -17,10 +17,7 @@ import Weather from './components/Weather'
 import Devices from './components/Devices'
 import DeviceMenu from './components/DeviceMenu'
 import Integrations from './components/Integrations'
-
-const Home = () => (
-  <div> <h2>TKTL notes app</h2> </div>
-)
+import Registracija from './components/Registracija'
 
 
 
@@ -87,7 +84,7 @@ console.log("user", user);
                   <Route path="/uredjaji" element={<Devices setChosenDev={setChosenDev} deviceList={deviceList} setDeviceList={setDeviceList}/>}/>
                   <Route path="/device_menu" element={<DeviceMenu chosenDev={chosenDev}/>}/>
                   <Route path="/integrations" element={<Integrations  deviceList={deviceList} setDeviceList={setDeviceList}/>}/>
-
+                  <Route path="/registracija" element={<Registracija/>}/>
                 </Routes>
           
                 

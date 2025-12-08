@@ -1,34 +1,38 @@
 import { useState } from 'react'
-import loginService from '../services/login'
+
 import { useNavigate } from 'react-router-dom'
-import parcelService from '../services/parcels'
+
 import './Login.css'
+import registerService from '../services/register'
 
 
-
-
-const Login = ({setUser}) => {
+const Registracija = () => {
     const [username, setUsername] = useState('') 
     const [password, setPassword] = useState('')
+    const [name, setName] = useState('')
     const [errorMessage, setErrorMessage] = useState(null)
    
     const navigate = useNavigate()
 
     const handleLogin = async (event) => {
         event.preventDefault()
-        console.log('logging in with', username, password)
+        
         try {
-            const user = await loginService.login({
+
+             await registerService.register({username,name, password})
+            /*const user = await loginService.login({
               username, password,
             })
             window.localStorage.setItem(
               'loggedFarmAppUser', JSON.stringify(user)
             )
-            setUser(user)
-            parcelService.setToken(user.token)
+              
+            setUser(user)*/
+           // parcelService.setToken(user.token)
             setUsername('')
             setPassword('')
-            navigate('/parcele')
+            setName('')
+            navigate('/login')
           } catch (exception) {
             console.log(exception)
             setErrorMessage('Wrong credentials')
@@ -52,6 +56,15 @@ const Login = ({setUser}) => {
             onChange={({ target }) => setUsername(target.value)}
           />
         </div>
+         <div>
+          name
+            <input
+            type="text"
+            value={name}
+            name="name"
+            onChange={({ target }) => setName(target.value)}
+          />
+        </div>
         <div>
           password
             <input
@@ -61,12 +74,12 @@ const Login = ({setUser}) => {
             onChange={({ target }) => setPassword(target.value)}
           />
         </div>
-        <button type="submit">login</button>
+        <button type="submit">Register</button>
       </form>
       <h4>{errorMessage}</h4>
 
       <div>
-         <a onClick={() => navigate('/registracija')}>Registracija</a>
+         <a onClick={() => navigate('/login')}>Login</a>
       </div>
         </div>
         </div>
@@ -76,4 +89,5 @@ const Login = ({setUser}) => {
 
 }
 
-export default Login
+
+export default Registracija

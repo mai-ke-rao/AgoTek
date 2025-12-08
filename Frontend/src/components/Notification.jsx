@@ -9,6 +9,7 @@ const Notification = ({ message, mistake }) => {
     borderStyle: 'solid',
     borderRadius: 5,
     padding: 10,
+    marginTop: 10,
     marginBottom: 10
   }
 
@@ -19,6 +20,7 @@ const Notification = ({ message, mistake }) => {
     borderStyle: 'solid',
     borderRadius: 5,
     padding: 10,
+    marginTop: 10,
     marginBottom: 10
   }
     return (

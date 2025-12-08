@@ -1,12 +1,12 @@
 import SideBar from './SideBar'
 import './Activities.css'
 import {useState, useEffect} from 'react'
-import activitiesReducer, {setActivities, addActivitiy} from '../reducers/activitiesReducer'
-import { useDispatch, useSelector } from 'react-redux'
+import  {setActivities, addActivitiy} from '../reducers/activitiesReducer'
+import { useDispatch } from 'react-redux'
 import activitiesService from '../services/activities'
 
 import ActivitiesPreview from './activitiesPreview'
-
+import PopNotification from './PopNotification'
 
 
 
@@ -14,6 +14,7 @@ import ActivitiesPreview from './activitiesPreview'
 
 const Activities = ({chosenParcId}) => {
 
+  
     const [showA, setShowA] = useState(false)
     const [disableForm, setDisableForm] = useState(false)
     const dispatch = useDispatch()
@@ -36,12 +37,21 @@ const Activities = ({chosenParcId}) => {
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
        activitiesService.setToken(user.token)
+       if(!chosenParcId) 
+        {
+             
+            return
+        }
+
         activitiesService.getAll(chosenParcId).then(activities => dispatch(setActivities(activities)))
     }
        
     }, [])
    
     
+    if(!chosenParcId) return(
+        <PopNotification message={"Moras odabrati parcelu za ovu funkcionalnost"} />
+    )
 
     return(
         <div className="flex p3">
