@@ -11,8 +11,8 @@ const activitiesArray = useSelector(state => {
 }
 )
 
-const activitesAbridged = activitiesArray.map((Aobject) =>  ({['datum do']: Aobject.datum_do,
-    ['Vrsta aktivnosti']: Aobject.activityType, ['tip obrade']:Aobject.tip_obrade, ['id']: Aobject.id
+const activitesAbridged = activitiesArray.map((Aobject) =>  ({['datum_do']: Aobject.datum_do,
+    ['activityType']: Aobject.activityType, ['tip_obrade']:Aobject.tip_obrade, ['id']: Aobject.id
  }))
  console.log("activitesAbridged: ", activitesAbridged);
 
@@ -21,16 +21,8 @@ const activitesAbridged = activitiesArray.map((Aobject) =>  ({['datum do']: Aobj
     const pickedActivity = activitiesArray.find((element) => element.id == activityId)
     console.log("picked activty", pickedActivity);
     
-    setFormData(  {
-        'datum od': pickedActivity[        "datum_od"],
-        'datum do': pickedActivity[        "datum_do"],
-        'Vrsta aktivnosti': pickedActivity[        "activityType"],
-        'tip obrade': pickedActivity[        "tip_obrade"],
-        'dubina o':pickedActivity[        "dubina"],
-        'komentar': pickedActivity[        "komentar"],
-        'cena o h':pickedActivity[        "cena_operacije_h"],
-       'chosenParcId': pickedActivity[        "parcel"]
- })
+    setFormData(  pickedActivity,
+       )
     setShowA(true)
     setDisableForm(true)
     
@@ -42,10 +34,10 @@ return(
 <div>
     {activitesAbridged.map(el => <div id={el.id} className="card" onClick={() => expandHandler(el.id)}>
        <div className="left" ><img src={spadeImg} className="icon"></img> <div className="text">
-        <div className="title">{el['Vrsta aktivnosti']}</div>  
-        <div className="subtitle">{el['tip obrade']} </div>
+        <div className="title">{el['activityType']}</div>  
+        <div className="subtitle">{el['tip_obrade']} </div>
         </div></div>
-        <div className="date"> {el['datum do']}</div>
+        <div className="date"> {el['datum_do']}</div>
     </div> )}
    
 

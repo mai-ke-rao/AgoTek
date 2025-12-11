@@ -16,12 +16,16 @@ const BaseSchema = new mongoose.Schema({
         required: true
     },
     cena_operacije_h: Number,
+    cena_opercaije_p:Number,
     komentar: String,
     user: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
     parcel: {type: mongoose.Schema.Types.ObjectId, ref: 'Parcel' }
  }, { 
   timestamps: true, 
   discriminatorKey: 'kind', // default: __t
+   toJSON: { virtuals: true },      // important!
+    toObject: { virtuals: true }
+  
 });
 const Base = mongoose.model('Item', BaseSchema);
 
@@ -47,6 +51,8 @@ const Obrada = Base.discriminator('obrada', new mongoose.Schema({
     dubina: Number,
   
 })
+, 
+{ inherit: true }
 );
 
 const Djubrenje = Base.discriminator('djubrenje', new mongoose.Schema({
@@ -114,6 +120,7 @@ const NegaUseva = Base.discriminator('negaUseva', new mongoose.Schema({
 
 const ZetvaBerba  = Base.discriminator('zetvaBerba', new mongoose.Schema({
     prinos_h: Number,
+    prinos_p: Number,
     vlaga: Number,
     primese: Number,
     hektolitarska_masa: Number,
@@ -165,13 +172,10 @@ const Analiza =  Base.discriminator('analiza', new mongoose.Schema({
 )
 );
 
-BaseSchema.set('toJSON', {
-    transform:(document, returnedObject) => {
-        returnedObject.id = returnedObject._id.toString()
-        delete returnedObject._id
-        delete returnedObject.__v
-      }
-})
+BaseSchema.set('toJSON', { transform:(document, returnedObject) => { 
+    returnedObject.id = returnedObject._id.toString() 
+    delete returnedObject._id
+     delete returnedObject.__v } })
 
 module.exports =  {Obrada, ZetvaBerba, NegaUseva ,SetvaSadnja ,Djubrenje, Komentar ,Analiza ,Base}
  

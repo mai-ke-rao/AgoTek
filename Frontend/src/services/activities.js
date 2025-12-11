@@ -19,12 +19,12 @@ const getAll = (parcId) => {
     return request.then(response => response.data)
   }
 
-  const addNew = async (content, aktivnost) => {
+  const addNew = async (content) => {
     const config = {
         headers: { Authorization: token },
       }
     const object = content
-    const response = await axios.post(origin + baseUrl + aktivnost, object, config)
+    const response = await axios.post(origin + baseUrl, object, config)
     return response.data
   }
 
