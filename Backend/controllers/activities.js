@@ -51,6 +51,7 @@ const {
   Analiza,
   Base    
 } = require('../models/activity');
+const { findByIdAndUpdate } = require('../models/user');
 
 
 
@@ -76,10 +77,7 @@ const MODEL_BY_ACTIVITY_TYPE = {
   'analiza': Analiza
 };
 
-/**
- * GET /:parcelId
- * Returns all activities (any kind) for the current user and the given parcel.
- */
+
 
 
 /**
@@ -118,6 +116,46 @@ activitiesRouter.post('/', userExtractor, async (req, res, next) => {
     return next(err);
   }
 });
+
+
+activitiesRouter.put("/:actId", userExtractor, async (req, res, nest) => {
+
+  console.log("request je ", req.body);
+  
+  const updatedDoc = await Base.findByIdAndUpdate( req.params.actId,
+  { $set: req.body },
+  {
+    new: true,          // return updated document
+    runValidators: true // validate against discriminator schema
+  })
+
+
+  if(!updatedDoc)
+  {
+    return res.status(404).json({ error: 'Not found' })
+  }
+  else{
+    
+res.status(200).json(updatedDoc);
+  }
+})
+
+
+
+
+activitiesRouter.delete("/:actId", userExtractor, async (req, res, next) => {
+
+const deletedDoc = await Base.findByIdAndDelete(req.params.actId)
+if (!deletedDoc) {
+  return res.status(404).json({ error: 'Not found' });
+}
+
+res.status(200).json({
+  message: 'Deleted successfully',
+  deletedDoc
+});
+
+})
 
 
 module.exports = activitiesRouter

@@ -23,11 +23,30 @@ const activitiesSlice = createSlice({
         },
         setActivities(state, action){
             return action.payload
-        }
+        },
+         deleteItem(state, action) {
+           
+
+     return state.filter(
+        item => item._id !== action.payload
+      )
+     
+    },
+    updateItem(state, action){
+        const index = state.findIndex(el => el.id === action.payload.id)
+  if (index !== -1) {
+    state[index] = action.payload
+  }
+
+
+}
+
+        
+    
 
     }
 
 })
 
-export const {createActivity, addActivitiy, setActivities} = activitiesSlice.actions
+export const {createActivity, addActivitiy, setActivities, deleteItem, updateItem} = activitiesSlice.actions
 export default activitiesSlice.reducer

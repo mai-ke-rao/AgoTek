@@ -5,11 +5,13 @@ import App from './App.jsx'
 import { configureStore } from '@reduxjs/toolkit'
 import { Provider } from 'react-redux'
 import activitiesReducer from './reducers/activitiesReducer'
+import notificationReducer from './reducers/notificationReducer.js'
 
 
 const store = configureStore({
   reducer: {
-    activities: activitiesReducer
+    activities: activitiesReducer,
+    notification: notificationReducer
   }
 })
 

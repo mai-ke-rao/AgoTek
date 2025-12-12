@@ -28,5 +28,26 @@ const getAll = (parcId) => {
     return response.data
   }
 
+  const deleteOne = async (activityID) => {
 
-  export default {getAll, setToken, addNew}
+ const config = {
+        headers: { Authorization: token },
+      }
+      const resposne = await axios.delete(origin + baseUrl+ activityID, config)
+      return resposne
+  }
+
+
+  const updateOne = async (activityID, content) => {
+const config = {
+        headers: { Authorization: token },
+      }
+
+      const object = content
+    const response = await axios.put(origin + baseUrl + activityID, object, config)
+    return response.data
+
+  }
+
+
+  export default {getAll, setToken, addNew, deleteOne, updateOne}
