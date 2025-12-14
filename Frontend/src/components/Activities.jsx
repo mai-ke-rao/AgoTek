@@ -256,7 +256,7 @@ const validateHelper = (formObject) => {
         <label htmlFor="activityType">Vrsta aktivnosti:</label><label htmlFor='activityType' style={{color:'red'}}>*</label><br></br>
     <select name='activityType' id='activityType' value={formData['activityType']} onChange={handleChange}  disabled={disableForm}>
     <option value=""></option>
-        <option value="djubrenje">Komentar</option>
+        <option value="komentar">Komentar</option>
         <option value="obrada">Obrada zemljista</option>
         <option value="zetva/berba">Zetva/berba</option>
     </select>

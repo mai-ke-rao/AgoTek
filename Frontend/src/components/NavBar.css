@@ -17,7 +17,7 @@ body {
   
 }
 .navbar {
-  position: sticky;
+  /* position: sticky; */
   top: 15px;
   width: 100%;
   height: 70px; 
@@ -134,3 +134,15 @@ body {
 .content {
   padding: 2rem;
 }
+
+
+.burger-dropdown{
+  background-color: var(--hoarse-green);
+  height: 70px;
+  text-align: center;
+  padding-top: 20px;
+  
+  color: white;
+  
+}
+

@@ -19,6 +19,9 @@ const Navbar = ({user, parcels, chosenParcId}) => {
 
   const navigate = useNavigate()
 
+const [showBurger, setShowBurger] = useState(false)
+
+
 const pickedParc = () => {
 
   console.log("NavBar rerender");
@@ -46,6 +49,14 @@ const demo = {
         width: 60,
         height: 60,
       }
+
+
+const toggleDrop = () => {
+
+  setShowBurger(!showBurger)
+  return
+}
+
     return (
         <div>
          
@@ -55,10 +66,11 @@ const demo = {
 <div className="nav-container">
 
  
-<div className="burger" onclick="toggleMenu()">
+<div className="burger" onClick={() => toggleDrop()}>
         <div></div>
         <div></div>
         <div></div>
+        
       </div>
       <div className="nav-links" id="navLinks">
   
@@ -81,14 +93,55 @@ const demo = {
   </div>
 </nav>
 
-
-
+{showBurger? <DropDown/> : null}
 
          
         
           </div>
      
       )
+}
+
+
+const DropDown = () => {
+
+
+
+  return(
+    <>
+
+<Link to="/"   className='no-link-style' onClick={() => toggleDrop()}>
+<div className="burger-dropdown">
+<h3>Pocetna</h3>
+</div>
+</Link>
+
+    <Link to="/vremenska"   className='no-link-style' onClick={() => toggleDrop()}>
+<div className="burger-dropdown">
+<h3>Vremenska prognoza</h3>
+</div>
+</Link>
+
+ <Link to="/parcele"  className='no-link-style' onClick={() => toggleDrop()}>
+<div className="burger-dropdown">
+<h3>Parcele</h3>
+</div>
+</Link>
+
+ <Link to="/aktivnosti"  className='no-link-style' onClick={() => toggleDrop()}>
+<div className="burger-dropdown">
+<h3>Aktivnosti</h3>
+</div>
+</Link>
+
+ <Link to="/uredjaji"  className='no-link-style' onClick={() => toggleDrop()}>
+<div className="burger-dropdown">
+<h3>Uredjaji</h3>
+</div>
+</Link>
+
+</>
+  )
 }
 
 export default Navbar

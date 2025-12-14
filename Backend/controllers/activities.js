@@ -11,29 +11,17 @@ activitiesRouter.get('/:id', userExtractor, async(request, response) => {
     try{
     const activities = await Base.find({user: request.user.id.toString()
         , parcel: request.params.id})
-        response.json(activities)
-        console.log("request params: ", request.params.id);
+         return response.json(activities)
+        
         
     }
     catch (error) {
         console.error('Error while fetching data:', error);
+        return response.status(404).json("Error while fetching data")
       }
 })
 
-/*
-activitiesRouter.get('/:parcelId', userExtractor, async (req, res, next) => {
-  try {
-    const activities = await Item().find({
-      user: req.user.id,
-      parcel: req.params.parcelId,
-    }).sort({ createdAt: -1 });
 
-    return res.json(activities);
-  } catch (err) {
-    return next(err);
-  }
-});
-*/
 
 
 
