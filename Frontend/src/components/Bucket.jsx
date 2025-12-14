@@ -54,7 +54,8 @@ useEffect(() => {
     __new: true,   // 👈 flag only on new rows
   }));
 
-  return [...highlighted, ...prev];
+
+  return [...highlighted, ...prev].slice(0, 17);
 });
     });
 

@@ -225,6 +225,7 @@ tr{
 .new-row {
   animation: highlightFade 2.5s ease-out;
   background-color: #ffeaa7;
+  
 }
 
 @keyframes highlightFade {
