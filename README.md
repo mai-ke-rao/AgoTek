@@ -33,9 +33,23 @@ Base Url to AgoTek's base url + /api/TTN
 Enable event types: Uplink message, Downlink que invalidated, Service data.
 
 Go back to the AgoTek App, in "Uredjaji" section choose "Dodaju uredjaj" Choose TTN integration.
-Past the End_Device_ID and API key and name your device.
+Paste the End_Device_ID and API key and name your device.
 
-##### 2.2
+##### 2.2 Chripstack v1
+
+Open the Chirpstack v1 console
+Create the API key and copy it to the clipboard,
+Copy you DEV_EUI,
+
+Go to the application in Chirpstack console and then to integrations,
+choose http integrarion 
+set:
+Event endpoint URL(s): to base url of AgoTek app
+Payload encoding to JSON
+Add header Content-Type : appication/json
+
+Go back to the AgoTek App, in "Uredjaji" section choose "Dodaju uredjaj" Choose Chripstack integrarion.
+Paste the DEV_EUI and Api key and name your device
 
 
 refrences: 
