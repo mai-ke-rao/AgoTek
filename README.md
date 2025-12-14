@@ -19,7 +19,23 @@ are needed for "Knjiga polja"[1]. \
 Application provides ability to send and receive data from LoraWAN devices. 
 ![Demo](./demo.gif)
 
+##### 2.1 The Things Network
 
+Open The Things Network console 
+Create and copy API key,
+Copy your End_Device_ID,
+
+Create new custom Webhook,
+set: 
+Downlink Api key to the created Api key
+Webhook format to JSON
+Base Url to AgoTek's base url + /api/TTN
+Enable event types: Uplink message, Downlink que invalidated, Service data.
+
+Go back to the AgoTek App, in "Uredjaji" section choose "Dodaju uredjaj" Choose TTN integration.
+Past the End_Device_ID and API key and name your device.
+
+##### 2.2
 
 
 refrences: 
