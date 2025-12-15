@@ -1,5 +1,5 @@
 import axios from 'axios'
-const origin = 'http://localhost:3001'
+
 const baseUrl = '/api/parcels'
 
 let token = null
@@ -13,7 +13,7 @@ const getAll = () => {
     const config = {
         headers: { Authorization: token },
       }
-    const request = axios.get(origin+baseUrl, config)
+    const request = axios.get(baseUrl, config)
     return request.then(response => response.data)
   }
 
@@ -26,7 +26,7 @@ const getAll = () => {
       }
       
 const object = content
-const response = await axios.post(origin + baseUrl, object, config)
+const response = await axios.post(baseUrl, object, config)
 return response.data
   }
 

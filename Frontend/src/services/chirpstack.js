@@ -1,5 +1,5 @@
 import axios from 'axios'
-const origin = 'http://localhost:3001'
+
 const baseUrl = '/api/Chirpstack'
 import { encode as base64_encode} from 'base-64';
 let token = null
@@ -20,7 +20,7 @@ const path = "connector"
     headers: { Authorization: token },
   }
 const object = content
-const response = await axios.post(origin + baseUrl + "/" + path, object, config)
+const response = await axios.post(baseUrl + "/" + path, object, config)
 return response.data
 }
 
@@ -47,7 +47,7 @@ const sendDownlink = (dev, payload) => {
   }
 
 
-  const request = axios.post(origin+baseUrl+"/send-downlink", object, config)
+  const request = axios.post(baseUrl+"/send-downlink", object, config)
   return request.then(response => response)
 }
 

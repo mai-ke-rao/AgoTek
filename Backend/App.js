@@ -2,7 +2,7 @@ const config = require('./utils/config')
 const express = require('express')
 const app = express()
 const http = require('http');
-const cors = require('cors')
+const path = require("path");
 const mongoose = require('mongoose')
 const middleware = require('./utils/middleware')
 const parcelsRouter = require('./controllers/parcels')
@@ -28,18 +28,14 @@ mongoose.connect(config.MONGODB_URI)
   })
 
 
-app.use(cors())
+
 app.use(express.json())
 
 
 const server = http.createServer(app);
 
 const io = new Server(server, {
- cors: {
-    origin: "http://localhost:5173",
-    methods: ["GET", "POST"],
-    credentials: true,
-  },
+
 });
 
 app.set('io', io);
@@ -60,6 +56,10 @@ app.use('/api/Chirpstack', ChripstackRouter)
 app.use('/api/activities', activitesRouter)
 app.use('/api/parcels', parcelsRouter)
 
+app.use(express.static(path.join(__dirname, "dist")));
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "dist", "index.html"));
+});
 
 
 module.exports = {app, server}

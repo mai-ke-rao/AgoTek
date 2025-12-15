@@ -1,5 +1,5 @@
 import axios from 'axios'
-const origin = 'http://localhost:3001'
+
 const baseUrl = '/api/activities/'
 
 let token = null
@@ -15,7 +15,7 @@ const getAll = (parcId) => {
     const config = {
         headers: { Authorization: token },
       }
-    const request = axios.get(origin+baseUrl+parcId, config)
+    const request = axios.get(baseUrl+parcId, config)
     return request.then(response => response.data)
   }
 
@@ -24,7 +24,7 @@ const getAll = (parcId) => {
         headers: { Authorization: token },
       }
     const object = content
-    const response = await axios.post(origin + baseUrl, object, config)
+    const response = await axios.post( baseUrl, object, config)
     return response.data
   }
 
@@ -33,7 +33,7 @@ const getAll = (parcId) => {
  const config = {
         headers: { Authorization: token },
       }
-      const resposne = await axios.delete(origin + baseUrl+ activityID, config)
+      const resposne = await axios.delete(baseUrl+ activityID, config)
       return resposne
   }
 
@@ -44,7 +44,7 @@ const config = {
       }
 
       const object = content
-    const response = await axios.put(origin + baseUrl + activityID, object, config)
+    const response = await axios.put( baseUrl + activityID, object, config)
     return response.data
 
   }

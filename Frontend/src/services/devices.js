@@ -1,5 +1,5 @@
 import axios from 'axios'
-const origin = 'http://localhost:3001'
+
 const baseUrl = '/api/TTN'
 import { encode as base64_encode} from 'base-64';
 let token = null
@@ -21,7 +21,7 @@ const getAll = () => {
   const config = {
     headers: { Authorization: token },
   }
-  const request = axios.get(origin+baseUrl+path, config)
+  const request = axios.get(baseUrl+path, config)
   return request.then(response => response.data)
 }
 
@@ -32,7 +32,7 @@ const path = "connector"
     headers: { Authorization: token },
   }
 const object = content
-const response = await axios.post(origin + baseUrl + "/" + path, object, config)
+const response = await axios.post(baseUrl + "/" + path, object, config)
 return response.data
 }
 
@@ -44,7 +44,7 @@ const config = {
   headers: { Authorization: token },
 }
 
-const request = axios.get(origin+baseUrl+path+dev_id+"/"+page, config)
+const request = axios.get(baseUrl+path+dev_id+"/"+page, config)
   return request.then(response => response.data)
 
 }
@@ -73,7 +73,7 @@ const sendDownlink = (dev, payload) => {
   }
 
 
-  const request = axios.post(origin+baseUrl+"/send-downlink", object, config)
+  const request = axios.post(baseUrl+"/send-downlink", object, config)
   return request.then(response => response)
 }
 
