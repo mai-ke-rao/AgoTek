@@ -15,7 +15,6 @@ const { Server } = require('socket.io');
 const socketController = require('./controllers/socketController');
 
 
-
 mongoose.set('strictQuery', false)
 
 mongoose.connect(config.MONGODB_URI)
