@@ -187,7 +187,7 @@ TTNRouter.post('/send-downlink', userExtractor, async (req, res) => {
    
    
     console.log("downlink payload", downlinkPayload);
-    
+    try {
     
     const device = await Device.find({user: req.user.id.toString(), dev_id: dev_id.toString()})
    
@@ -197,7 +197,7 @@ TTNRouter.post('/send-downlink', userExtractor, async (req, res) => {
     const apikey = jwt.verify(device[0].apikey_encrypted, process.env.SECRET)
     
     
-    try {
+    
         
       const response = await fetch(url, {
         method: 'POST',

@@ -56,7 +56,7 @@ ChirpstackRouter.post('/send-downlink', userExtractor, async (req, res) => {
    
     console.log("downlink payload", downlinkPayload);
     
-    
+    try {
     const device = await Chripdev.findOne({user: req.user.id.toString(), dev_eui: dev_eui.toString()})
 
 
@@ -65,7 +65,7 @@ ChirpstackRouter.post('/send-downlink', userExtractor, async (req, res) => {
      console.log("url is : ", url);
      
 
-    try {
+    
         
       const response = await fetch(url, {
         method: 'POST',

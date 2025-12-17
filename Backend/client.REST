@@ -112,9 +112,9 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik5pa
     }
 
 ###Dev_data auth check
-GET http://localhost:3001/api/TTN/device_data/mojuredjajsafaksa/2
+GET http://localhost:3001/api/TTN/device_data/mojuredjajsafaksa/-5
 Content-Type:application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkFsZWtzYW5kYXIiLCJpZCI6IjY4ZTI5YTk3YjYxNTM5MmI5OGM0YjkyZSIsImlhdCI6MTc2NDY3OTIyNn0.JhNAsxuI1otwcBvydFxCS03xDiMaw8dDpMgK2SOKdIQ
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QiLCJpZCI6IjY5MzA3YzQ4MWRiMTVhNDdlODc0MWU3NiIsImlhdCI6MTc2NTkwNjU3NH0.V77e1VIZBn4V7_YuzFPu4WiahBD3Z8qJeM44TJUMXvA
 
 ###Get Parcels
 GET  http://localhost:3001/api/parcels
@@ -130,6 +130,29 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc
  "apikey":"NNSXS.523DYXOLSCKDCSB6JWZY.ERBFIWIOA24ALXZFLKTTDRD37ADRA77VRK7WMOUMEIBHYBKEM40Q",
  "dev_id": "mojuredjajsafaksa",
   "name": "proba"
+}
+
+###crash app attempt (resilient)
+POST http://localhost:3001/api/TTN
+Content-Type:application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QiLCJpZCI6IjY5MzA3YzQ4MWRiMTVhNDdlODc0MWU3NiIsImlhdCI6MTc2NTkwNjU3NH0.V77e1VIZBn4V7_YuzFPu4WiahBD3Z8qJeM44TJUMXvA
+{
+  "uplink_message": {
+    "decoded_payload": "pozz"
+
+  }
+}
+
+###crash app attempt (resilient)
+POST http://localhost:3001/api/TTN/send-downlink
+Content-Type:application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QiLCJpZCI6IjY5MzA3YzQ4MWRiMTVhNDdlODc0MWU3NiIsImlhdCI6MTc2NTkwNjU3NH0.V77e1VIZBn4V7_YuzFPu4WiahBD3Z8qJeM44TJUMXvA
+
+{
+  "uplink_message": {
+    "decoded_payload": "pozz"
+
+  }
 }
 
 
