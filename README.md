@@ -1,7 +1,7 @@
 ### Web application for menagement of agricultural production. 
 
 Application is fully reactive and 
-has two main features: \
+has two main features: 
 1. Inventory app for individual agriculturalists for keeping complete account of plant production from the fields of \
 arable and vegetable farming.
 2. Interface with LoraWAN device trough integration with LoraWAN network servers (The Things Network and Chirpstack v1).\
