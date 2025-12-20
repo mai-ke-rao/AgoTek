@@ -1,22 +1,24 @@
 ### Web application for menagement of agricultural production. 
 
+Application uses React, Node.js, MongoDB, Redux, Websockets, etc.
 Application is fully reactive and 
 has two main features: 
 1. Inventory app for individual agriculturalists for keeping complete account of plant production from the fields of \
 arable and vegetable farming.
-2. Interface with LoraWAN device trough integration with LoraWAN network servers (The Things Network and Chirpstack v1).\
+2. Interface with LoraWAN device trough integration with LoraWAN network servers (The Things Network and Chirpstack v1
 
   ###  1. Inventory app
 
 After user is logged into the account, he is located on the page for creation and choosing of fields. \
 After field is choosen it is possible to add activies that are done on that field. \
 Actvities pages offer CRUD capabilites. It features dynamic formulars that are equivalent to the ones that \
-are needed for "Knjiga polja"[1]. \
+are needed for "Knjiga polja"[1]. 
 
 
 ### 2. Inteface with LoraWAN device
 
-Application provides ability to send and receive data from LoraWAN devices. 
+Application provides ability to send and receive data in real time from LoraWAN devices. 
+
 ![Demo](./demo.gif)
 
 ##### 2.1 The Things Network
