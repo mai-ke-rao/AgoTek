@@ -159,10 +159,33 @@ thead{
     font-weight: 500;
     text-align: left;
     position: relative;
+    text-emphasis: none;
+    text-decoration: none;
+    font-style: normal;
+    font-weight: lighter;
     
+}
+
+.bucket-search{
+     text-align: left;
+    position: relative;
+    align-items: start;
+    align-self: flex-start;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    border-color: var(--hoarse-green);
+    border-style:ridge;
+    border-radius: 5px;
+    border-width: 1px;
+    padding-left: 5px;
 }
 th{
     padding: 0px 10px;
+    text-emphasis: none;
+    text-decoration: none;
+    font-style: normal;
+    font-weight: lighter;
+
 }
 
 tbody{
@@ -223,7 +246,7 @@ tr{
   }
 
 .new-row {
-  animation: highlightFade 2.5s ease-out;
+  
   background-color: #ffeaa7;
   
 }
@@ -232,9 +255,7 @@ tr{
   0% {
     background-color: #ffd54f;
   }
-  40% {
-    background-color: #ffeaa7;
-  }
+ 
   100% {
     background-color: transparent;
   }

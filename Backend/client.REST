@@ -4,8 +4,7 @@ Content-Type:application/json
 Accept: application/json
 
 {
-"username":"test",
-"name":"test",
+
 "password":"test"
 }
 ###Login
@@ -29,15 +28,15 @@ Authorization: bearer
 
 ### Create activity of obrada type "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik5pa29sYSIsImlkIjoiNjdlNmY0Y2QyNzY4YzMyYmI5YmMyOGNiIiwiaWF0IjoxNzQzNzYyNDQ5fQ.50EgRRaJLM8_ZBVPSiNBIUMG8fXgXcZXYK44TbBplDQ"
 
-POST http://localhost:3001/api/activities/obrada
+POST http://localhost:3001/api/activities
 Content-Type:application/json
-Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik5pa29sYSIsImlkIjoiNjdlNmY0Y2QyNzY4YzMyYmI5YmMyOGNiIiwiaWF0IjoxNzQ0MDE2MjUwfQ.Biiww4zJ3DFFoJPu4X4kNrP1C0OPzwZC64CUoyjbCfA"
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QiLCJpZCI6IjY5MzA3YzQ4MWRiMTVhNDdlODc0MWU3NiIsImlhdCI6MTc2NTkwNjU3NH0.V77e1VIZBn4V7_YuzFPu4WiahBD3Z8qJeM44TJUMXvA
 
     {
         "activityType": "obrada",
-        "datum_od": "12-12-2024",
-        "datum_do": "12-12-2024",
+  
         "tip_obrade": "oranje",
+        "debili": "da",
         "parcel": "67e6f7f8e68483481acb1ad0"
     }
 
@@ -91,15 +90,31 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik5pa
 
     {
         "activityType": "djubrenje",
+        "datum_od": "10-12-2024",
+        "datum_do": "10-12-2024",
         "cena_repromaterijala_h": 200,
         "tip_djubrenja": "predsetveno",
-        "datum_od": "09-12-2024",
-        "datum_do": "09-12-2024",
-        "parcel": "67e6f7f8e68483481acb1ad0"
+        "parcel": "67e6f7f8e68483481acb1ad0",
+          "debili": "da"
     }
 
 ###Obrada
 POST http://localhost:3001/api/activities/
+Content-Type:application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik5pa29sYSIsImlkIjoiNjdlNmY0Y2QyNzY4YzMyYmI5YmMyOGNiIiwiaWF0IjoxNzQ0MDE2MjUwfQ.Biiww4zJ3DFFoJPu4X4kNrP1C0OPzwZC64CUoyjbCfA
+
+    {
+        "activityType": "obrada",
+        "datum_od": "10-12-2024",
+        "datum_do": "10-12-2024",
+        "tip_obrade": "drljanje",
+        "parcel": "67e6f7f8e68483481acb1ad0"
+       
+    }
+
+###Obrada
+
+PUT http://localhost:3001/api/activities/
 Content-Type:application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik5pa29sYSIsImlkIjoiNjdlNmY0Y2QyNzY4YzMyYmI5YmMyOGNiIiwiaWF0IjoxNzQ0MDE2MjUwfQ.Biiww4zJ3DFFoJPu4X4kNrP1C0OPzwZC64CUoyjbCfA
 

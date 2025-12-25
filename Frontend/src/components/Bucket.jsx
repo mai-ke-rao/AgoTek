@@ -2,16 +2,27 @@ import { useState, useEffect } from 'react'
 import './Bucket.css'
 import devicesService from '../services/devices'
 import { io } from 'socket.io-client';
+import BucketQuery from './BucketQuery'
+
+const FetchTypes = {
+  name : "name",
+  value : "value",
+  date : "date_time"
+}
 
 const Bucket = ({chosenDev}) => {
 
     const [bucket, setBucket] = useState([])
+    const [queryBucket, setQueryBucket] = useState([])
     const [page, setPage] = useState('1')
+    const [searchQ, setSearchQ] = useState("")
+    const [queryField, setQueryField] = useState()
 
 useEffect(() => {
     devicesService.getDataPage(chosenDev.dev_id, page).then((data) => 
     setBucket([...data]))
-
+      console.log("bucket", bucket);
+      
 },[page, chosenDev?.dev_id])
 
 
@@ -81,19 +92,74 @@ useEffect(() => {
 }, [bucket]);
 
 
+useEffect(() => {
+
+  
+  if(queryBucket.length < 1 && searchQ.length > 0) {
+    const data = devicesService.getDataPage(chosenDev.dev_id, "all").then((data) => 
+      setQueryBucket([...data])
+    )
+    
+  }
+
+
+},[searchQ])
+
+function SearchName (e){
+  e.preventDefault;
+  setQueryField(FetchTypes.name)
+  setSearchQ(e.target.value)
+  setPage(1)
+}
+
+function SearchValue (e){
+  e.preventDefault;
+  setQueryField(FetchTypes.value)
+  setSearchQ(e.target.value)
+  setPage(1)
+}
+
+function SearchDate (e){
+e.preventDefault;
+setQueryField(FetchTypes.date)
+setSearchQ(e.target.value)
+setPage(1)
+
+
+}
+
+console.log("bucket", bucket);
+
     return(
         <div>
         <table>
         <thead>
             <tr >
-                <th className='tName'>name</th>
-                <th className='tInput'>value</th>
-                <th className='tconnection'>date time</th>
+                <th className='tName'>name
+                 
+                   <br></br>
+                  <input placeholder='search...' className='bucket-search' type='search' name='n' value={queryField == "name" ? searchQ : ""} onChange={SearchName}/>
+                  </th>
+                
+                <th className='tInput'>value
+                  
+                   <br></br>
+                   <input placeholder='search...' className='bucket-search' type='search' name='v' value={queryField == "value" ? searchQ : ""} onChange={SearchValue}/>
+                  </th> 
+                
+                <th className='tconnection'>date time
+                  
+                   <br></br>
+                
+                 <input  placeholder='search...' className='bucket-search' type='date' name='d' value={queryField == "date_time" ? searchQ : ""} onChange={SearchDate}/>
+                
+                  </th> 
               
             </tr>
             </thead>
             <tbody>
-            {bucket.map(el => 
+
+            {(searchQ.length < 1) ? bucket.map(el => 
                 <tr key={el._id} className={el.__new ? 'new-row' : 'rows'}>
                     <td>
                         {el.name}
@@ -105,8 +171,8 @@ useEffect(() => {
                         {el.date_time}
                     </td>
                 </tr>
-                 )}
-         
+                 ):  <BucketQuery query={searchQ} queryBucket={queryBucket} queryField={queryField} page={page}/>}
+          
                 
                     </tbody>
                 

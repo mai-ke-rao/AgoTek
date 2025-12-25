@@ -139,7 +139,7 @@ TTNRouter.get('/device_data/:dev_id/:page', userExtractor, async(request, respon
     
   
     
-    const skip = (15*Number(request.params.page))-15
+   
     try {
     //we are checking if the user has access to the device that dev_id was provided for
     const dev = await Device.find({dev_id: request.params.dev_id})
@@ -156,9 +156,19 @@ else{
    
       console.log("Auth for dev is true");
       console.log("dev.user: ", dev[0].user, "/n request.user.id.toString():", request.user.id.toString());
+      var data;
+        if(String(request.params.page) != "all"){
+           console.log("this is NORMAL TTN DATA request", request.params.page)
+       const skip = (15*Number(request.params.page))-15
       
-    const data = await Bucket.find({dev_id: request.params.dev_id}).sort({date_time: -1}).limit(15).skip(skip)
-   
+     data = await Bucket.find({dev_id: request.params.dev_id}).sort({date_time: -1}).limit(15).skip(skip)
+       }
+        
+        else{  //this is search query therefore we are returing entire bucket to keep it simple
+              console.log("this is a query request", request.params.page)
+             data = await Bucket.find({dev_id: request.params.dev_id}).sort({date_time: -1})
+
+        }
     if(data){
       console.log("data", data);
       

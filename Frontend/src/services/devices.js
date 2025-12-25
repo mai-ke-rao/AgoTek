@@ -44,7 +44,7 @@ const config = {
   headers: { Authorization: token },
 }
 
-const request = axios.get(origin+baseUrl+path+dev_id+"/"+page, config)
+const request = axios.get(origin+baseUrl+path+dev_id+"/"+page , config)
   return request.then(response => response.data)
 
 }
