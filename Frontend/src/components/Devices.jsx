@@ -9,7 +9,7 @@ import {
     useNavigate
  } from 'react-router-dom'
 import CreateTTN from './CreateTTN'
-
+ import NotificationSA from './NotificationSA'
 
 
 const Devices = ({setChosenDev, deviceList, setDeviceList}) => {
@@ -37,6 +37,8 @@ console.log("dev list: ", deviceList);
                 <button className='bar-button' onClick={()=>{ navigate('/integrations')}}> Dodaj uredjaj </button>
                 </div>
             
+<NotificationSA/>
+
             <table>
                 <thead>
                     <tr >

@@ -23,6 +23,7 @@ try {
       console.log("yo bruder ich bin awacht");      
       return
     }
+    //here I need to say hey does the user in question have the key. This is where server state caches comes into question.
     const data = request.body.uplink_message?.decoded_payload
     const dev_id = request.body.end_device_ids.device_id
     console.log("yo bruder ich bin awacht");
@@ -87,6 +88,14 @@ TTNRouter.post('/connector', userExtractor, async(request, response) => {
    var body = request.body
   const apikey_encrypted = jwt.sign(body.apikey, config.SECRET)
 
+const duplicate = await Device.findOne({dev_id: body.dev_id})
+
+if (duplicate) {
+  return response.status(409).json({
+    error: 'Device with this dev_id already exists',
+  });
+}
+
 const device = new Device({
     name: body.name,
     apikey_encrypted: apikey_encrypted,
@@ -137,23 +146,21 @@ TTNRouter.get('/device_list', userExtractor, async(request, response) => {
 TTNRouter.get('/device_data/:dev_id/:page', userExtractor, async(request, response) => {
     
     
-  
+  //either I checkout user keys or he sends me his key
     
    
     try {
     //we are checking if the user has access to the device that dev_id was provided for
-    const dev = await Device.find({dev_id: request.params.dev_id})
+    var dev = await Device.find({dev_id: request.params.dev_id, user: request.user.id.toString()})
     //dev is in array, this should be cleaned
-    if(!(dev[0].user  == request.user.id.toString()))
-{
-  console.log("dev is: ", dev[0].user, "/n request.user.id.toString():", request.user.id.toString());
-   response.status(403).json({ error: 'Forbidden' });
-}
-else{
+    //Either check or devices with same id or forbid same ids, also be lucid of sockets.
+    }catch(error){
+       console.error("device not found")
+     return response.status(403).json({ error: 'device not found' });
+    }
+ 
 
-
-    
-   
+   try{
       console.log("Auth for dev is true");
       console.log("dev.user: ", dev[0].user, "/n request.user.id.toString():", request.user.id.toString());
       var data;
@@ -179,7 +186,7 @@ else{
     }
     
   
-  }
+  
 }
     catch(error){
       console.error("error in getting data from Data Base")

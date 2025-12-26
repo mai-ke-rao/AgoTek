@@ -52,8 +52,8 @@ const [intPick, setIntPick] = useState()
         </div>
         </div>
 
-            {intPick == 'ttn'? <CreateTTN setIntPick={setIntPick} deviceList={deviceList} setDeviceList={setDeviceList}/>: null}
-            {intPick == 'chirp'? <CreateChirp setIntPick={setIntPick} deviceList={deviceList} setDeviceList={setDeviceList}/>: null}
+            {intPick == 'ttn'? <CreateTTN setIntPick={setIntPick} devList={deviceList} setDeviceList={setDeviceList}/>: null}
+            {intPick == 'chirp'? <CreateChirp setIntPick={setIntPick} devList={deviceList} setDeviceList={setDeviceList}/>: null}
 
             </div>
 

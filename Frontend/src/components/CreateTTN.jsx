@@ -4,11 +4,14 @@ import closeIcon from '../assets/cancel.png'
 import {
     useNavigate
  } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import {setNotification} from '../reducers/notificationReducer'
+
 
 const CreateTTN = ({setIntPick, devList, setDeviceList}) => {
 
     let navigate = useNavigate();
-    
+       const dispatch = useDispatch()
     const [formData, setFormData] = useState(
         {
             name:"",
@@ -18,17 +21,31 @@ const CreateTTN = ({setIntPick, devList, setDeviceList}) => {
     )
     const handleSubmit = async (event) => {
         event.preventDefault();
-        
+        console.log("submited form data", formData);
+        try{
         const newDevice = await devicesSerivce.addNew(formData)
+         dispatch(setNotification({message: "Uspeno ste dodali uredjaj", type: "success", visible: true}))
         setDeviceList([...devList, newDevice])
         console.log("device list in hanlde submit: ",devList);
-        setIntPick("")
+         setIntPick("")
         navigate("/uredjaji")
-    }
+        }catch(e) {
+
+             dispatch(setNotification({message: e.message, type: "fail", visible: true}))
+         setIntPick("")
+         navigate("/uredjaji")
+        }
+     
+        
+        }
+
+        
 
 
     const hadnleChange = (event) => {
         const { name , value } = event.target;
+        console.log("form data name", name, "value", value);
+        
         setFormData((prevState) =>  ({ ...prevState, [name]: value}))
     }
     
