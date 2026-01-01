@@ -16,6 +16,7 @@ const DeviceMenu = ({chosenDev}) => {
         <SideBar />
         <div className='full-width'>
         <p className='header'>{chosenDev.name}</p>
+       
         <div className='container'>
             <div className='menu'>
                 <button className={`menu-item ${chosenTab == "data"? "clicked" : ""}`} onClick={() => setChosenTab("data")}>data</button>

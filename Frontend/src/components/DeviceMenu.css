@@ -35,7 +35,7 @@
 }
 
 .menu {
-    overflow: auto hidden;
+   
     height: 40px;
     flex-wrap: wrap;
     white-space: nowrap;

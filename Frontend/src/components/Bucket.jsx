@@ -3,6 +3,7 @@ import './Bucket.css'
 import devicesService from '../services/devices'
 import { io } from 'socket.io-client';
 import BucketQuery from './BucketQuery'
+import Papa from "papaparse";
 
 const FetchTypes = {
   name : "name",
@@ -128,10 +129,41 @@ setPage(1)
 
 }
 
+const downloadCsvFromJson = async (filename = "export.csv") =>  {
+  // data: Array<object>
+  const data = devicesService.getDataPage(chosenDev.dev_id, "all").then((data) => {
+
+  const csv = Papa.unparse(data, {
+    quotes: false,          // set true if you want everything quoted
+    delimiter: ",",
+    header: true,
+    skipEmptyLines: true,
+  });
+ const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+
+  URL.revokeObjectURL(url);
+
+})
+}
+
 console.log("bucket", bucket);
 
     return(
         <div>
+
+           <div className='bar'>
+        <button className='bar-button' onClick={() => downloadCsvFromJson(chosenDev.name)}>
+  Export CSV
+</button>
+</div>
         <table>
         <thead>
             <tr >

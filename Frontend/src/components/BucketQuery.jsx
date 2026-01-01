@@ -2,12 +2,7 @@ import './Bucket.css'
 import { useEffect } from 'react'
 
 const BucketQuery = ({query, queryBucket, queryField, page}) => {
-/*
-       useEffect(() => {
-const temp = queryBucket.filter(el => String(el[queryField]).substring(0, query.length)  == query)
 
-const prunedRes = temp.slice(0 + (page - 1) * 15, 15 + (page - 1) * 15)
-    }, [page])*/
 
 const temp = queryBucket.filter(el => String(el[queryField]).substring(0, query.length)  == query)
 
