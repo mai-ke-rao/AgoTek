@@ -40,7 +40,7 @@ const App = () => {
     const loggedUserJSON = window.localStorage.getItem('loggedFarmAppUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
-      setChosenParcId(JSON.parse(window.localStorage.getItem('chosenParcelId')))
+      
       setUser(user)
       parcelService.setToken(user.token)
       activitiesService.setToken(user.token)
@@ -51,21 +51,9 @@ const App = () => {
      
     }
   }, [])
-/*
-   useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedFarmAppUser')
-    if (loggedUserJSON) {
-      parcelService.getAll().then(returnedParcels => 
-          setParcels(returnedParcels)
-           
-      )
-       }
-  
-   }, [])*/
 
-console.log("parcels: ", parcels);
-console.log("parcelId", chosenParcId);
-console.log("user", user);
+
+
 
 
 

@@ -37,8 +37,8 @@ const [showNotification, setShowNotification] = useState(false);
     window.localStorage.setItem(
         'chosenParcelId', JSON.stringify(parcId)
       )
-      setChosenParcId(JSON.parse(window.localStorage.getItem('chosenParcelId')))
-      //This is workaround to rerender the navbar, because I did not save chosen parc id 
+      setChosenParcId(parcId)
+      
 
  }
 
@@ -46,6 +46,8 @@ const [showNotification, setShowNotification] = useState(false);
 
     parcelService.getAll().then(returnedParcels => 
         setParcels(returnedParcels))
+
+        setChosenParcId(JSON.parse(window.localStorage.getItem('chosenParcelId')))
  }, [])
 
 

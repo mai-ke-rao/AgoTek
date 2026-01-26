@@ -11,6 +11,24 @@ const fetch = require('node-fetch');
 
 
 
+const apikeyExtractor = (device) => {
+
+
+  
+try{
+
+ 
+
+   const apikey = jwt.verify(device.apikey_encrypted, process.env.SECRET)
+   return apikey
+
+
+}catch(e){
+
+
+  return response.status(401).json({ error: 'Device api key error' });
+}
+}
 
 //getting data from ttn
 TTNRouter.post('/', async(request, response) => {
@@ -20,13 +38,13 @@ try {
 
     if(Object.is(undefined, request.body.uplink_message.decoded_payload))
     {
-      console.log("yo bruder ich bin awacht");      
+         
       return
     }
     //here I need to say hey does the user in question have the key. This is where server state caches comes into question.
     const data = request.body.uplink_message?.decoded_payload
     const dev_id = request.body.end_device_ids.device_id
-    console.log("yo bruder ich bin awacht");
+    
     
     const dev = await Device.findOne({dev_id: dev_id})
   
@@ -37,6 +55,14 @@ try {
 
     }
     
+    const apikey = apikeyExtractor(dev)
+    //we check that user has apikey for the packet.
+      if(apikey != request.headers['x-downlink-apikey']) {
+          console.log("User provided key: ", apikey);
+          console.log("apikey from request: ", request.headers['x-downlink-apikey'])
+          return response.status(401).json({ error: 'Device api key error' });
+
+      }
     
     if(!dev.downpush){
       console.log(request.headers);
@@ -143,6 +169,8 @@ TTNRouter.get('/device_list', userExtractor, async(request, response) => {
 
 //getting the device data in bathces of 15 (hopefully newer to older)
 
+
+
 TTNRouter.get('/device_data/:dev_id/:page', userExtractor, async(request, response) => {
     
     
@@ -163,6 +191,7 @@ TTNRouter.get('/device_data/:dev_id/:page', userExtractor, async(request, respon
    try{
       console.log("Auth for dev is true");
       console.log("dev.user: ", dev[0].user, "/n request.user.id.toString():", request.user.id.toString());
+
       var data;
         if(String(request.params.page) != "all"){
            console.log("this is NORMAL TTN DATA request", request.params.page)
