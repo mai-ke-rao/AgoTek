@@ -54,15 +54,15 @@ try {
       return response.status(404).json({ error: "Not found" });
 
     }
-    
+    /*
     const apikey = apikeyExtractor(dev)
-    //we check that user has apikey for the packet.
       if(apikey != request.headers['x-downlink-apikey']) {
           console.log("User provided key: ", apikey);
           console.log("apikey from request: ", request.headers['x-downlink-apikey'])
           return response.status(401).json({ error: 'Device api key error' });
 
       }
+    */      
     
     if(!dev.downpush){
       console.log(request.headers);
