@@ -113,7 +113,7 @@ TTNRouter.post('/connector', userExtractor, async(request, response) => {
 
    var body = request.body
   const apikey_encrypted = jwt.sign(body.apikey, config.SECRET)
-
+/*
 const duplicate = await Device.findOne({dev_id: body.dev_id})
 
 if (duplicate) {
@@ -121,7 +121,7 @@ if (duplicate) {
     error: 'Device with this dev_id already exists',
   });
 }
-
+*/
 const device = new Device({
     name: body.name,
     apikey_encrypted: apikey_encrypted,
