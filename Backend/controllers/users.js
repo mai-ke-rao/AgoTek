@@ -27,12 +27,6 @@ const saltRounds = 10
   return next(err);
 }
 })
-/*
-usersRouter.get('/', async(request, response) =>
-{
-  const users = await User.find({}).populate('blogs',{title:1,authot:1,url:1})
-  response.json(users)
-})
-  */
+
 
 module.exports = usersRouter

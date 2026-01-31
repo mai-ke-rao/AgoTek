@@ -113,15 +113,8 @@ TTNRouter.post('/connector', userExtractor, async(request, response) => {
 
    var body = request.body
   const apikey_encrypted = jwt.sign(body.apikey, config.SECRET)
-/*
-const duplicate = await Device.findOne({dev_id: body.dev_id})
 
-if (duplicate) {
-  return response.status(409).json({
-    error: 'Device with this dev_id already exists',
-  });
-}
-*/
+try{
 const device = new Device({
     name: body.name,
     apikey_encrypted: apikey_encrypted,
@@ -137,13 +130,22 @@ if(Object.is(undefined, device.name || device.apikey_hash)){
 
         const result = await device.save()
         
-        const user = request.user
-        user.devices = user.devices.concat(result.id)
-        await user.save() 
+        
 
         response.status(201).json(result)
 
     }
+     }
+  catch (err) {
+  if (err.code === 11000) {
+    return response.status(409).json({
+      error: "Device with this dev_eui already exists"
+    });
+  }
+
+  next(err); // let errorHandler deal with other errors
+}
+
 
 })
 

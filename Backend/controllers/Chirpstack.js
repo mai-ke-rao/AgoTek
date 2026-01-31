@@ -22,6 +22,7 @@ ChirpstackRouter.post('/connector', userExtractor, async(request, response) => {
    var body = request.body
   const apikey_encrypted = jwt.sign(body.apikey, config.SECRET)
 
+  try{
 const device = new Chripdev({
     name: body.name,
     apikey_encrypted: apikey_encrypted,
@@ -29,6 +30,8 @@ const device = new Chripdev({
     user: request.user.id
   
 })
+  
+
 if(Object.is(undefined, device.name || device.apikey_hash)){
     response.status(400).end()}
     else{
@@ -37,13 +40,21 @@ if(Object.is(undefined, device.name || device.apikey_hash)){
 
         const result = await device.save()
         
-        const user = request.user
-        user.devices = user.devices.concat(result.id)
-        await user.save() 
+       
 
         response.status(201).json(result)
 
     }
+  }
+  catch (err) {
+  if (err.code === 11000) {
+    return response.status(409).json({
+      error: "Device with this dev_eui already exists"
+    });
+  }
+
+  next(err); // let errorHandler deal with other errors
+}
 
 })
 

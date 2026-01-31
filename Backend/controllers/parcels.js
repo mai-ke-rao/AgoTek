@@ -39,8 +39,6 @@ if(Object.is(undefined, parcel.name)){
 const result = await parcel.save()
 
 
-user.parcels = user.parcels.concat(result.id)
-await user.save()
 
 response.status(201).json(result)
 

@@ -9,6 +9,9 @@ const deviceSchema = new mongoose.Schema({
     user: {type: mongoose.Schema.Types.ObjectId, ref: 'User'}
 })
 
+deviceSchema.index({ dev_id: 1 }, { unique: true });
+
+
 deviceSchema.set('toJSON', {
     transform: (document, returnedObject) => {
       returnedObject.id = returnedObject._id.toString()

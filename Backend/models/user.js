@@ -8,20 +8,21 @@ const userSchema = new mongoose.Schema({
     minlength: 3
   },
   name: String,
-  passwordHash: String,
-  parcels: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Parcel'
-    }
-  ],
-  devices: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Device'
-    }
-  ]
+  passwordHash: String
 })
+
+userSchema.virtual("parcels", {
+  ref: "Parcel",
+  localField: "_id",
+  foreignField: "user"
+});
+
+userSchema.virtual("devices", {
+  ref: "Device",
+  localField: "_id",
+  foreignField: "user"
+});
+
 
 userSchema.set('toJSON', {
   transform: (document, returnedObject) => {
@@ -33,6 +34,11 @@ userSchema.set('toJSON', {
   }
 })
 
+userSchema.set("toJSON", { virtuals: true });
+userSchema.set("toObject", { virtuals: true });
+
 const User = mongoose.model('User', userSchema)
 
 module.exports = User
+
+

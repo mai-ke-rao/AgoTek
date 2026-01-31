@@ -7,6 +7,9 @@ const chirpSchema = new mongoose.Schema({
     dev_eui: String,
     user: {type: mongoose.Schema.Types.ObjectId, ref: 'User'}
 })
+/*
+chirpSchema.index({ dev_eui: 1 }, { unique: true });
+*/
 
 chirpSchema.set('toJSON', {
     transform: (document, returnedObject) => {
