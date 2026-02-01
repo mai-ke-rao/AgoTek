@@ -8,6 +8,7 @@ const Chirpdev = require('../models/chripdev')
 const Bucket = require('../models/bucket')
 const { tokenExtractor, userExtractor } = require('../utils/middleware')
 const fetch = require('node-fetch'); 
+ const { encrypt, decrypt } = require("../utils/cryptoHelper");
 
 
 
@@ -18,8 +19,8 @@ const apikeyExtractor = (device) => {
 try{
 
  
-
-   const apikey = jwt.verify(device.apikey_encrypted, process.env.SECRET)
+const apikey = decrypt(device.apikey_encrypted);
+   
    return apikey
 
 
@@ -112,7 +113,15 @@ try {
 TTNRouter.post('/connector', userExtractor, async(request, response) => {
 
    var body = request.body
-  const apikey_encrypted = jwt.sign(body.apikey, config.SECRET)
+
+  const encryptedKey = encrypt(apikey);
+
+await Device.create({
+  dev_id,
+  apikey_encrypted: encryptedKey,
+  user: user._id
+});
+
 
 try{
 const device = new Device({

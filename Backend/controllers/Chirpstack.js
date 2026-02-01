@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken')
 const { userExtractor } = require('../utils/middleware')
 const fetch = require('node-fetch'); 
 const config = require('../utils/config')
-
+ const { encrypt, decrypt } = require("../utils/cryptoHelper");
 
 
 
@@ -20,7 +20,8 @@ console.log(req);
 ChirpstackRouter.post('/connector', userExtractor, async(request, response) => {
 
    var body = request.body
-  const apikey_encrypted = jwt.sign(body.apikey, config.SECRET)
+   
+    const apikey_encrypted = encrypt(device.apikey_encrypted);
 
   try{
 const device = new Chripdev({
