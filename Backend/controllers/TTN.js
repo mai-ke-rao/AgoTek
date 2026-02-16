@@ -114,19 +114,12 @@ TTNRouter.post('/connector', userExtractor, async(request, response) => {
 
    var body = request.body
 
-  const encryptedKey = encrypt(apikey);
-
-await Device.create({
-  dev_id,
-  apikey_encrypted: encryptedKey,
-  user: user._id
-});
-
+  const encryptedKey = encrypt(body.apikey);
 
 try{
 const device = new Device({
     name: body.name,
-    apikey_encrypted: apikey_encrypted,
+    apikey_encrypted: encryptedKey,
     dev_id: body.dev_id,
     user: request.user.id
   
@@ -251,7 +244,8 @@ TTNRouter.post('/send-downlink', userExtractor, async (req, res) => {
    
  const url = device[0].downpush;
   console.log("url is", url);
-    const apikey = jwt.verify(device[0].apikey_encrypted, process.env.SECRET)
+      const apikey = apikeyExtractor(device[0])
+   
     
     
     
@@ -267,7 +261,7 @@ TTNRouter.post('/send-downlink', userExtractor, async (req, res) => {
       });
   
       const result = await response;
-     // logger.info("response status", result['Symbol(Response internals)'].status)
+     
       res.status(200).json(result)
     } catch (error) {
       console.error('Error pushing to TTN:', error);
