@@ -19,7 +19,9 @@ const ActivityForm = ({showA, chosenParcId, setShowA, disableForm, setDisableFor
     /*const [vrstaAktivnost, setVrstaAktivnosti] = useState("")*/
     const dispatch = useDispatch()
    
-    const [submitEnable, setSubmitEnable] = useState(false)
+ //   const [submitEnable, setSubmitEnable] = useState(false)
+
+    //const [dates, setDates] = useState(false)
 
     const activitiesArray = useSelector(state => {
   
@@ -27,29 +29,36 @@ const ActivityForm = ({showA, chosenParcId, setShowA, disableForm, setDisableFor
 }
 )
 
-    useEffect(() => {
+         
+const validateHelper = (formObject) => {
+    if(formObject['datum_od'] != "" && formObject['datum_do'] != ""){
+        return true;
 
+    }
+    else {
+        return false;
+    }
+}
 
-    const dates = validateHelper(formData)
+ console.log("form data going to validate helper", formData);
+    
+    
+    var submitEnable = false;
 switch (formData['activityType']){
     case 'obrada':
-        if(formData.tip_obrade? formData.tip_obrade.length > 0: true && dates)
-        {
-            setSubmitEnable(true)
-            return 
-        }
-        else{
-            setSubmitEnable(false)
-        return 
-        }
-
+        submitEnable = (Boolean(formData.tip_obrade?.length) && validateHelper(formData))
+        break;
     default:
-        setSubmitEnable(true)
-        return 
+        submitEnable  = ( Boolean(formData['activityType']?.length) && validateHelper(formData))
+         console.log("submitEnable in default path", submitEnable);
+         break;
+        
 }
 
 
-    }, [formData])
+
+
+ 
       
 
       const handleChange = (event) => {
@@ -74,16 +83,7 @@ switch (formData['activityType']){
                 return res.data
             }
         }
-      
-const validateHelper = (formObject) => {
-    if(formObject['datum_od'] != "" && formObject['datum_do'] != ""){
-        return true;
-
-    }
-    else {
-        return false;
-    }
-}
+ 
 
 
 
