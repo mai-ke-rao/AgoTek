@@ -1,1 +1,3 @@
 /newIgnore
+.env
+client.REST
