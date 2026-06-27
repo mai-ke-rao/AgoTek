@@ -37,7 +37,7 @@ useEffect(() => {
       const user = JSON.parse(loggedUserJSON)
      
     // Create socket connection
-    const socket = io('http://localhost:3001', {
+    const socket = io(import.meta.env.VITE_IOT_URL, {
       withCredentials: true,
       auth: {
         token: user.token, 

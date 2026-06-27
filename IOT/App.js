@@ -5,10 +5,10 @@ const http = require('http');
 const cors = require('cors')
 const mongoose = require('mongoose')
 const middleware = require('./utils/middleware')
-const parcelsRouter = require('./controllers/parcels')
-const usersRouter = require('./controllers/users')
-const loginRouter = require('./controllers/login')
-const activitesRouter = require('./controllers/activities')
+const TTNRouter = require('./controllers/TTN')
+const ChirpstackRouter = require('./controllers/Chirpstack')
+const { Server } = require('socket.io');
+const socketController = require('./controllers/socketController');
 
 mongoose.set('strictQuery', false)
 
@@ -25,12 +25,23 @@ app.use(express.json())
 
 const server = http.createServer(app);
 
-app.use('/api/users', usersRouter)
-app.use('/api/login', loginRouter)
+const io = new Server(server, {
+  cors: {
+    origin: process.env.FRONTEND_URL || "http://localhost:5173",
+    methods: ["GET", "POST"],
+    credentials: true,
+  },
+});
+
+app.set('io', io);
+
+io.use(middleware.socketAuth);
+
+socketController(io);
 
 app.use(middleware.requestLogger)
 app.use(middleware.tokenExtractor)
-app.use('/api/activities', activitesRouter)
-app.use('/api/parcels', parcelsRouter)
+app.use('/api/TTN', TTNRouter)
+app.use('/api/Chirpstack', ChirpstackRouter)
 
 module.exports = { app, server }

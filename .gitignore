@@ -1,4 +1,4 @@
 /newIgnore
 .env
 client.REST
-node_modules
+node_modules/

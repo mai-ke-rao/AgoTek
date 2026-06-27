@@ -1,0 +1,92 @@
+const logger = require('./logger')
+const jwt = require('jsonwebtoken')
+const User = require('../models/user')
+
+const requestLogger = (request, response, next) => {
+  logger.info('Method:', request.method)
+  logger.info('Path:  ', request.path)
+  logger.info('Body:  ', request.body)
+  logger.info('---')
+  next()
+}
+
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: 'unknown endpoint' })
+}
+
+const errorHandler = (error, request, response, next) => {
+  logger.error(error.message)
+
+  if (error.name === 'CastError') {
+    return response.status(400).send({ error: 'malformatted id' })
+  } else if (error.name === 'ValidationError') {
+    return response.status(400).json({ error: error.message })
+  } else if (error.name === 'JsonWebTokenError') {
+    return response.status(400).json({ error: error.message })
+  }
+  next(error)
+}
+
+const tokenExtractor = (request, response, next) => {
+  try {
+    const authorization = request.get('authorization')
+    if (authorization && authorization.startsWith('Bearer ')) {
+      request.token = authorization.replace('Bearer ', '')
+    } else {
+      request.token = null
+    }
+    next()
+  } catch(e) {
+    return response.status(401).send({ error: 'authorization error' })
+  }
+}
+
+const getUserFromToken = async (token) => {
+  const decodedToken = jwt.verify(token, process.env.SECRET)
+  if (!decodedToken.id) {
+    throw new Error('invalid token')
+  }
+  const user = await User.findById(decodedToken.id)
+  return user
+}
+
+const userExtractor = async (request, response, next) => {
+  try {
+    logger.info("request token is: ", request.token)
+    request.user = await getUserFromToken(request.token)
+    logger.info("request user is: ", request.user)
+    next()
+  } catch(e) {
+    return response.status(401).send({ error: 'auth error' })
+  }
+}
+
+const socketAuth = async (socket, next) => {
+  try {
+    const token = socket.handshake.auth?.token
+
+    if (!token) {
+      return next(new Error('Unauthorized'))
+    }
+
+    const user = await getUserFromToken(token)
+
+    if (!user) {
+      return next(new Error('Unauthorized'))
+    }
+
+    socket.user = user
+    next()
+  } catch (err) {
+    next(new Error('Unauthorized'))
+  }
+}
+
+module.exports = {
+  requestLogger,
+  unknownEndpoint,
+  errorHandler,
+  tokenExtractor,
+  userExtractor,
+  socketAuth
+}

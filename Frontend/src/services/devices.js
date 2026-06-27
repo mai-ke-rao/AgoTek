@@ -1,5 +1,5 @@
 import axios from 'axios'
-const origin = import.meta.env.VITE_API_URL
+const origin = import.meta.env.VITE_IOT_URL
 const baseUrl = '/api/TTN'
 import { encode as base64_encode} from 'base-64';
 let token = null
