@@ -1,0 +1,95 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Project Overview
+
+AgoTek is a web application for managing agricultural production. It has two primary features:
+1. **Inventory app** — CRUD management of farm parcels and field activities (aligned with Serbian "Knjiga polja" regulations)
+2. **LoRaWAN device interface** — real-time bidirectional communication with IoT sensors via The Things Network (TTN) and Chirpstack v1
+
+## Development Commands
+
+**Backend** (runs on port 3001):
+```bash
+cd Backend
+npm run dev      # nodemon with auto-reload
+npm start        # production start
+```
+
+**Frontend** (runs on port 5173):
+```bash
+cd Frontend
+npm run dev      # Vite dev server
+npm run build    # production build
+npm run lint     # ESLint
+npm run preview  # preview production build
+```
+
+## Environment Variables
+
+**Backend `.env`:**
+- `MONGODB_URI` — MongoDB connection string
+- `MONGODB_URI_TEST` — test database URI
+- `SECRET` — JWT signing secret
+- `DEVICE_ENC_KEY` — base64-encoded 32-byte key for AES-256-GCM encryption of device API keys
+- `PORT` — defaults to 3001
+
+**Frontend `.env`:**
+- `VITE_API_URL` — backend base URL (e.g. `http://localhost:3001`)
+
+## Architecture
+
+### Backend (`Backend/`)
+
+Entry point: `index.js` → `App.js`. The app creates an HTTP server that wraps Express and mounts Socket.IO on it.
+
+**Middleware pipeline** (`utils/middleware.js`):
+- `requestLogger` — logs all requests
+- `tokenExtractor` — pulls JWT from `Authorization: Bearer` header into `request.token`
+- `userExtractor` — resolves token to a Mongoose User document; applied per-router, not globally
+
+**API routes:**
+- `POST /api/login` — returns JWT
+- `/api/users` — registration
+- `/api/parcels` — parcel CRUD (all protected by `userExtractor`)
+- `/api/activities` — activity CRUD (all protected)
+- `/api/TTN` — webhook receiver from TTN + device management + downlink sending
+- `/api/Chirpstack` — Chirpstack integration (partially implemented)
+
+**Device API key security** (`utils/cryptoHelper.js`): API keys are encrypted with AES-256-GCM before storage. Never store them in plaintext. The `apikeyExtractor` helper in the TTN controller decrypts on demand.
+
+**Activity model** (`models/activity.js`): Uses Mongoose discriminators on a base `Item` model. Subtypes: `Obrada`, `Djubrenje`, `SetvaSadnja`, `NegaUseva`, `ZetvaBerba`, `Komentar`, `Analiza`. The `kind` field is the discriminator key.
+
+**Sensor data** (`models/bucket.js`): Time-series readings from LoRaWAN uplinks. Each field in the decoded payload becomes a separate Bucket document with `{name, value, date_time, dev_id}`.
+
+**Real-time flow**: TTN POSTs uplink → server saves to Bucket → emits `uplink` Socket.IO event with `{dev_id, rows}`. Clients authenticate via `socket.handshake.auth.token` and join device-specific rooms via `join-device` event.
+
+**User model**: `parcels` and `devices` are Mongoose virtuals (not embedded), resolved via `foreignField: "user"`.
+
+### Frontend (`Frontend/src/`)
+
+React 19 + Vite. React Router v7 for routing. Redux Toolkit for global state.
+
+**Redux store** (`main.jsx`): Two slices — `activities` (list of activities for the current parcel) and `notification` (UI notification messages).
+
+**State management pattern**: User session, parcel list, chosen parcel ID, and device list live in local state in `App.jsx` and are passed as props. Redux is only used for activities and notifications.
+
+**Auth**: JWT stored in `localStorage` as `loggedFarmAppUser` (JSON with `token` field). Services read this directly rather than from a shared module.
+
+**Services** (`services/`): `parcels.js`, `activities.js`, `devices.js` (TTN), `chirpstack.js`, `login.js`, `register.js`. All use axios. Base URL is `import.meta.env.VITE_API_URL`. Each service has a `setToken()` method called on login.
+
+**Key routes:**
+- `/` — home (Pocetna), requires auth
+- `/parcele` — parcel selection/management
+- `/aktivnosti` — activity log for selected parcel
+- `/uredjaji` — device list
+- `/device_menu` — real-time device data + downlink sending
+- `/integrations` — add new TTN or Chirpstack device
+
+**Activity forms** live in `components/ActivityForms/` — one form per discriminator type. The `ActivityForm.jsx` component handles type selection and conditionally renders the appropriate sub-form.
+
+## Known Issues
+
+- `controllers/Chirpstack.js` (`/connector` route): references `device` before it is defined — `encrypt(device.apikey_encrypted)` runs before `new Chripdev(...)`. The uplink handler at `POST /api/Chirpstack/` is also a stub (logs request, no response).
+- `socketController.js`: joins device rooms using `socket.user.devices`, but the User model's `devices` virtual is not populated during socket auth — `getUserFromToken` does a plain `findById` without `.populate('devices')`, so `socket.user.devices` will be `undefined`.

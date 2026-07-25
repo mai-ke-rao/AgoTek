@@ -2,7 +2,7 @@
 import ChirpLogo from '../assets/chirp.png'
 import TTNLogo from '../assets/TTN.png'
 import SideBar from './SideBar'
-import './integrations.css'
+import './Integrations.css'
 import CreateTTN from './CreateTTN'
 import CreateChirp from './CreateChirp'
 import { useState } from 'react'

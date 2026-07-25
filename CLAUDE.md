@@ -14,7 +14,8 @@ Live deployment: https://agotek.onrender.com/
 
 ```
 /
-├── Backend/      # Node.js/Express API
+├── Backend/      # Node.js/Express API (auth, parcels, activities)
+├── IOT/          # Node.js/Express microservice (TTN/Chirpstack webhooks, Socket.IO)
 └── Frontend/     # React + Vite SPA
 ```
 
@@ -59,6 +60,42 @@ npm start      # production
 - `Device` (TTN) — dev_id (unique), encrypted apikey, downpush URL, user ref
 - `Chirpdev` (Chirpstack) — similar to Device
 - `Bucket` — time-series sensor readings (name, value, date_time, dev_id)
+
+## IOT Microservice
+
+As of the `extract IoT/realtime into standalone microservice` commit, TTN/Chirpstack webhook handling and Socket.IO live entirely in `IOT/`, separate from `Backend/`. This split lets `Backend/` run serverless while `IOT/` runs as a long-lived process (Socket.IO needs persistent connections).
+
+**Entry:** `IOT/index.js` → `IOT/App.js`
+
+**Stack:** Express, Mongoose (MongoDB), Socket.IO, JWT auth (shares the same `SECRET` as Backend so tokens issued by Backend's `/api/login` are valid here), node-fetch
+
+**Required env vars** (in `IOT/.env` — not yet created):
+- `MONGODB_URI` / `MONGODB_URI_TEST` — same MongoDB used by Backend (Device/Bucket/User collections live there)
+- `SECRET` — must match Backend's JWT secret
+- `PORT` — server port (default 3002)
+- `DEVICE_ENC_KEY` — AES-256-GCM key for device API key encryption/decryption (IOT has its own `utils/cryptoHelper.js`; devices are created and decrypted entirely within IOT now)
+
+**Dev commands** (run from `IOT/`):
+```bash
+npm install    # not yet run in this checkout — no node_modules present
+npm run dev    # nodemon hot-reload
+npm start      # production
+```
+
+**Routes:**
+| Prefix | Controller | Auth | Notes |
+|---|---|---|---|
+| `/api/TTN` | `controllers/TTN.js` | webhook: apikey header; CRUD: JWT | `POST /` is the TTN uplink webhook (authenticated via `x-downlink-apikey` header, not JWT); `POST /connector` creates a device; `GET /device_list`, `GET /device_data/:dev_id/:page`, `POST /send-downlink` are JWT-protected |
+| `/api/Chirpstack` | `controllers/Chirpstack.js` | same pattern | `POST /` webhook is currently a stub (logs body, returns 200 — no auth/persist logic yet) |
+
+**Socket.IO:** mounted on the same HTTP server as the Express app (`IOT/App.js`). `socketAuth` middleware (`utils/middleware.js`) validates the JWT passed in `socket.handshake.auth.token` before allowing connection. Clients emit `join-device`/`leave-device` with a `dev_id`; the TTN webhook handler emits `uplink` to that room after inserting new `Bucket` rows.
+
+**Frontend wiring:** `Frontend/.env` sets `VITE_IOT_URL` (default `http://localhost:3002`) separately from `VITE_API_URL` (Backend, default `http://localhost:3001`). `Frontend/src/services/devices.js` and `chirpstack.js` point at `VITE_IOT_URL`; `Frontend/src/components/Bucket.jsx` opens its socket connection against `VITE_IOT_URL`.
+
+**Known gaps (relevant when testing):**
+- IOT has no `.env` in this checkout and no `node_modules` installed yet.
+- The Chirpstack webhook handler is a stub (logs body, returns 200 — no persist/emit), so TTN is the only fully wired live-data path.
+- The extraction left dead files behind in `Backend/`: `controllers/TTN.js`, `controllers/Chirpstack.js`, `controllers/socketController.js`, `models/device.js`, `models/chripdev.js`, `models/bucket.js`, `utils/cryptoHelper.js`. None are imported by `Backend/App.js` anymore — the live versions are in `IOT/`. Don't point tests at Backend for anything device/socket-related.
 
 ## Frontend
 

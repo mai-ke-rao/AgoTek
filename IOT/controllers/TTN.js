@@ -10,10 +10,14 @@ const { encrypt, decrypt } = require("../utils/cryptoHelper");
 
 const apikeyExtractor = (device) => {
   try {
+    console.log("device", device);
+    
     const apikey = decrypt(device.apikey_encrypted);
     return apikey
   } catch(e) {
-    throw new Error('Device api key error')
+    console.log("error,", e);
+    
+    throw new Error('Device api key error', e)
   }
 }
 
