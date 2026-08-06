@@ -9,12 +9,14 @@ const TTNRouter = require('./controllers/TTN')
 const ChirpstackRouter = require('./controllers/Chirpstack')
 const { Server } = require('socket.io');
 const socketController = require('./controllers/socketController');
+const { AUTOMATION_MODULE_VERSION } = require('./automation');
 
 mongoose.set('strictQuery', false)
 
 mongoose.connect(config.MONGODB_URI)
   .then(() => {
     console.log('connected to MongoDB')
+    console.log('automation module version:', AUTOMATION_MODULE_VERSION)
   })
   .catch((error) => {
     console.log('error connecting to MongoDB:', error.message)
