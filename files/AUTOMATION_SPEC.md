@@ -368,7 +368,7 @@ against real Postgres (migrations, cascades, constraints, transaction rollback),
 and Playwright API tests for auth, ownership and validation.
 
 ## Safety
-Disabled-by-default rules, full audit log, kill switch, idempotent on webhook
+Disabled-by-default rules, full audit e og, kill switch, idempotent on webhook
 redelivery, per-rule error isolation, application-level ownership checks across
 the Mongo/Postgres boundary.
 

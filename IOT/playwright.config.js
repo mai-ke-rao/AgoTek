@@ -20,7 +20,7 @@ module.exports = defineConfig({
   // has to boot through tsx, same as the "dev" npm script does.
   webServer: {
     command: 'npx tsx index.js',
-    url: `http://localhost:${PORT}`,
+    url: `http://localhost:${PORT}/health`,
     reuseExistingServer: false,
     timeout: 30_000,
     stdout: 'pipe',

@@ -42,6 +42,7 @@ io.use(middleware.socketAuth);
 socketController(io);
 
 app.use(middleware.requestLogger)
+app.get('/health', (request, response) => response.sendStatus(200))
 app.use(middleware.tokenExtractor)
 app.use('/api/TTN', TTNRouter)
 app.use('/api/Chirpstack', ChirpstackRouter)

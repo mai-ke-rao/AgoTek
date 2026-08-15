@@ -23,6 +23,8 @@ const apikeyExtractor = (device) => {
 
 TTNRouter.post('/', async(request, response) => {
   try {
+    console.log('TTN uplink headers:', JSON.stringify(request.headers, null, 2));
+    console.log('TTN uplink payload:', JSON.stringify(request.body, null, 2));
     const io = request.app.get('io');
 
     if(Object.is(undefined, request.body.uplink_message.decoded_payload)) {
