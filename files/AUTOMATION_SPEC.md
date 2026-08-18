@@ -356,7 +356,7 @@ all-Render for now, document the cold-start caveat honestly in the README.
 > device downlinks when live telemetry satisfies them.
 [ Live demo ]  [ 20-sec GIF: build a rule → enable → uplink fires a downlink ]
 
-## Data model
+## Data mo
 Polyglot persistence: PostgreSQL (Drizzle) for the normalized rules domain —
 rules → clauses → actions → audit, with FKs, cascade deletes, DB-level enums and
 a composite index on the hot lookup. MongoDB retained for time-series telemetry.

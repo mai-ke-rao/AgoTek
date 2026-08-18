@@ -7,6 +7,9 @@ const bucketSchema = new mongoose.Schema({
     dev_id: String,
 })
 
+// latest-value lookups per device+variable (§3.3 AUTOMATION_SPEC.md)
+bucketSchema.index({ dev_id: 1, name: 1, date_time: -1 })
+
 bucketSchema.set('toJSON', {
     transform: (document, returnedObject) => {
       returnedObject.id = returnedObject._id.toString()

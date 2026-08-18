@@ -1,3 +1,4 @@
+
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '.env') });
 
@@ -20,7 +21,7 @@ module.exports = defineConfig({
   // has to boot through tsx, same as the "dev" npm script does.
   webServer: {
     command: 'npx tsx index.js',
-    url: `http://localhost:${PORT}/health`,
+    url: `http://localhost:${PORT}`,
     reuseExistingServer: false,
     timeout: 30_000,
     stdout: 'pipe',
