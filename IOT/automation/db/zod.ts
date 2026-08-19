@@ -25,3 +25,21 @@ export const createRuleRequestSchema = insertRuleSchema
   });
 
 export type CreateRuleRequest = z.infer<typeof createRuleRequestSchema>;
+
+// PATCH /api/rules/:id — metadata only. Clauses and the action are immutable;
+// changing conditions means delete + recreate.
+export const patchRuleSchema = insertRuleSchema
+  .pick({ name: true, combinator: true, enabled: true })
+  .partial()
+  .refine((patch) => Object.keys(patch).length > 0, {
+    message: "at least one of name, combinator or enabled must be provided",
+  });
+
+export type PatchRuleRequest = z.infer<typeof patchRuleSchema>;
+
+// POST /api/rules/kill-switch (§6.2) — omit devId to disable everything.
+export const killSwitchSchema = z.object({
+  devId: z.string().min(1).optional(),
+});
+
+export type KillSwitchRequest = z.infer<typeof killSwitchSchema>;

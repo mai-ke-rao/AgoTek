@@ -267,8 +267,7 @@ don't prevent that — **error handling does**:
 Pure function: `evaluate(condition, latestValues) → boolean`. Instant.
 
 | Case | Setup | Assert |
-|---|---|---|
-| Basic match | condition becomes true | true |
+2
 | Compound AND | one clause true, other false | false |
 | Compound AND | both true | true |
 | Compound OR | either true | true |
