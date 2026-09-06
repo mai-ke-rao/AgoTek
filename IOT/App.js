@@ -10,6 +10,7 @@ const ChirpstackRouter = require('./controllers/Chirpstack')
 const { Server } = require('socket.io');
 const socketController = require('./controllers/socketController');
 const { AUTOMATION_MODULE_VERSION } = require('./automation');
+const { rulesRouter } = require('./automation/rules/controller');
 
 mongoose.set('strictQuery', false)
 
@@ -46,5 +47,6 @@ app.get('/health', (request, response) => response.sendStatus(200))
 app.use(middleware.tokenExtractor)
 app.use('/api/TTN', TTNRouter)
 app.use('/api/Chirpstack', ChirpstackRouter)
+app.use('/api/rules', rulesRouter)
 
 module.exports = { app, server }
