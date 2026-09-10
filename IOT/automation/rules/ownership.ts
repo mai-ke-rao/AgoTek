@@ -24,9 +24,9 @@ export async function assertDevicesOwned(userId: string, devIds: string[]): Prom
 
   const owned = await Device.find({ user: userId, dev_id: { $in: wanted } })
     .select("dev_id")
-    .lean();
+    .lean<{ dev_id: string }[]>();
 
-  const ownedIds = new Set(owned.map((d: { dev_id: string }) => d.dev_id));
+  const ownedIds = new Set(owned.map((d) => d.dev_id));
   const missing = wanted.filter((id) => !ownedIds.has(id));
 
   if (missing.length > 0) throw new OwnershipError(missing);

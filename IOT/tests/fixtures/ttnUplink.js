@@ -15,6 +15,7 @@ function buildUplinkPayload(overrides = {}) {
       temperature: 12.86,
     },
     receivedAt = new Date().toISOString(),
+    fCnt, // TTN's frame counter — the automation engine's idempotency key
   } = overrides;
 
   return {
@@ -28,6 +29,7 @@ function buildUplinkPayload(overrides = {}) {
     received_at: receivedAt,
     uplink_message: {
       f_port: 1,
+      ...(fCnt !== undefined && { f_cnt: fCnt }),
       frm_payload: 'AQIDBAUGBwgJ',
       decoded_payload: decodedPayload,
     },

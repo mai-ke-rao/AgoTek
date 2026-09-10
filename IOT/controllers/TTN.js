@@ -4,8 +4,8 @@ const Device = require('../models/device')
 const Chirpdev = require('../models/chripdev')
 const Bucket = require('../models/bucket')
 const { tokenExtractor, userExtractor } = require('../utils/middleware')
-const fetch = require('node-fetch');
 const { encrypt, decrypt } = require("../utils/cryptoHelper");
+const automation = require('../automation');
 
 
 const apikeyExtractor = (device) => {
@@ -74,6 +74,11 @@ TTNRouter.post('/', async(request, response) => {
       dev_id,
       rows: insertedDocs,
     });
+
+    // Fire-and-forget (§2): rule evaluation must never delay or endanger the
+    // 200 ack. onReadings catches internally; this .catch is the last resort.
+    automation.onReadings(dev_id, data, request.body.uplink_message.f_cnt)
+      .catch((err) => console.error('automation error:', err));
 
     return response.sendStatus(200)
   } catch (err) {
@@ -156,27 +161,22 @@ TTNRouter.get('/device_data/:dev_id/:page', tokenExtractor, userExtractor, async
 })
 
 
+// Thin wrapper over automation.sendDownlink — the executor uses the same
+// function, so device lookup, key decrypt and the TTN POST live in one place.
 TTNRouter.post('/send-downlink', tokenExtractor, userExtractor, async (req, res) => {
   const { dev_id, downlinkPayload } = req.body;
 
+  if (!dev_id || !downlinkPayload) {
+    return res.status(400).json({ error: 'dev_id and downlinkPayload are required' });
+  }
+
   try {
-    const device = await Device.find({user: req.user.id.toString(), dev_id: dev_id.toString()})
-    const url = device[0].downpush;
-    const apikey = apikeyExtractor(device[0])
-
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${apikey}`,
-        'Content-Type': 'application/json',
-        'User-Agent': 'my-app/1.0'
-      },
-      body: JSON.stringify({ downlinks: [downlinkPayload] })
-    });
-
-    const result = await response;
-    res.status(200).json(result)
+    const result = await automation.sendDownlink(req.user.id.toString(), String(dev_id), downlinkPayload)
+    res.status(200).json({ ok: true, ...result })
   } catch (error) {
+    if (error instanceof automation.DownlinkError) {
+      return res.status(error.status).json({ error: error.message });
+    }
     console.error('Error pushing to TTN:', error);
     res.status(500).json({ error: 'Failed to send downlink' });
   }
