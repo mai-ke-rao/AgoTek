@@ -24,9 +24,11 @@ const SideBar = () => {
         
 
 
-    <div className="sidebar-link disabled">
-        Meteo podaci
+        <Link to='/automatizacije' className='reset-link'>
+    <div className="sidebar-link">
+        Automatizacije
     </div>
+    </Link>
 
 
         <Link to='/parcele' className='reset-link'>
@@ -53,12 +55,6 @@ const SideBar = () => {
         <Link to='/uredjaji' className='reset-link'>
     <div className="sidebar-link">
         Uredjaji
-    </div>
-    </Link>
-
-        <Link to='/automatizacije' className='reset-link'>
-    <div className="sidebar-link">
-        Automatizacije
     </div>
     </Link>
 </div>

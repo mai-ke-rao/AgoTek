@@ -36,15 +36,17 @@ const Pocetna = () => {
 
 
             
-                <div className='widget disabled'>
+                <Link to='/automatizacije' className='no-link-style'>
+                <div className='widget'>
                 <img src={meteoIcon}></img>
                 <div>
-                    <h2>Meteo podaci</h2>
+                    <h2>Automatizacija</h2>
                     <br></br>
-                    <p>Prikazuje podatke sa meteronloskih stanica najblizih odabranoj parceli</p>
+                    <p>Napravi pravila tipa "ako je vlaznost zemljista ispod 20, posalji downlink ventilu". Uslovi se proveravaju na svakom ocitavanju uredjaja, a svako okidanje se belezi u istoriji.</p>
                 </div>
 
                 </div>
+                </Link>
 
                 <Link to='/parcele' className='no-link-style'>
                 <div className='widget'>
