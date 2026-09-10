@@ -1,0 +1,146 @@
+.rules-table {
+    width: 1200px;
+}
+
+.rules-table td {
+    position: static;
+}
+
+.rules-table .tRule {
+    width: 220px;
+}
+.rules-table .tCondition {
+    width: 420px;
+}
+.rules-table .tAction {
+    width: 220px;
+}
+.rules-table .tStatus {
+    width: 120px;
+}
+.rules-table .tActions {
+    width: 220px;
+}
+
+.condition {
+    font-family: monospace;
+    font-size: 13px;
+}
+
+.combinator {
+    color: var(--gray-letters);
+    padding: 0 6px;
+}
+
+.toggle {
+    border: none;
+    border-radius: 12px;
+    padding: 4px 14px;
+    color: white;
+    cursor: pointer;
+    background-color: var(--gray-letters);
+}
+.toggle.on {
+    background-color: var(--heavy-green);
+}
+
+.row-button {
+    background: none;
+    border: 1px solid var(--hoarse-green);
+    color: var(--hoarse-green);
+    border-radius: 8px;
+    padding: 4px 10px;
+    margin-right: 8px;
+    cursor: pointer;
+}
+.row-button:hover {
+    background-color: var(--hower-green);
+}
+.row-button.danger {
+    border-color: #b03a2e;
+    color: #b03a2e;
+}
+
+.bar-button.danger {
+    background-color: #b03a2e;
+    margin-right: 10px;
+}
+.bar-button.danger:hover {
+    background-color: #7f2a21;
+}
+
+.empty {
+    margin-left: 55px;
+    margin-top: 70px;
+    color: var(--gray-letters);
+}
+
+/* create form */
+
+.rule-form select,
+.rule-form input {
+    padding: 6px;
+    border: 1px solid var(--sublime-gray);
+    border-radius: 4px;
+    background: white;
+}
+
+.clause-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 8px;
+}
+.clause-row .threshold {
+    width: 90px;
+}
+
+.field-row {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    margin-bottom: 16px;
+}
+.field-row label {
+    min-width: 160px;
+    font-weight: bold;
+}
+
+.hint {
+    color: var(--gray-letters);
+    font-size: 12px;
+}
+
+/* audit */
+
+.audit-header {
+    margin-left: 55px;
+    margin-top: 40px;
+    display: flex;
+    gap: 16px;
+    align-items: center;
+}
+
+.audit-table {
+    margin-top: 16px;
+}
+.audit-table td {
+    position: static;
+}
+
+.status-ok {
+    color: var(--heavy-green);
+    font-weight: bold;
+}
+.status-failed {
+    color: #b03a2e;
+    font-weight: bold;
+}
+
+.pager {
+    margin-left: 55px;
+    margin-top: 16px;
+}
+.pager button {
+    margin-right: 8px;
+}

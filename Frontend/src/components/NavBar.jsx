@@ -140,6 +140,12 @@ const DropDown = () => {
 </div>
 </Link>
 
+ <Link to="/automatizacije"  className='no-link-style' onClick={() => toggleDrop()}>
+<div className="burger-dropdown">
+<h3>Automatizacije</h3>
+</div>
+</Link>
+
 </>
   )
 }

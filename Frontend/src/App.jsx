@@ -18,6 +18,7 @@ import Devices from './components/Devices'
 import DeviceMenu from './components/DeviceMenu'
 import Integrations from './components/Integrations'
 import Registracija from './components/Registracija'
+import Rules from './components/Rules'
 
 
 
@@ -72,6 +73,7 @@ const App = () => {
                   <Route path="/uredjaji" element={<Devices setChosenDev={setChosenDev} deviceList={deviceList} setDeviceList={setDeviceList}/>}/>
                   <Route path="/device_menu" element={<DeviceMenu chosenDev={chosenDev}/>}/>
                   <Route path="/integrations" element={<Integrations  deviceList={deviceList} setDeviceList={setDeviceList}/>}/>
+                  <Route path="/automatizacije" element={<Rules/>}/>
                   <Route path="/registracija" element={<Registracija/>}/>
                 </Routes>
           

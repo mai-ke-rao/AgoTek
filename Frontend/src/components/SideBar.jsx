@@ -55,6 +55,12 @@ const SideBar = () => {
         Uredjaji
     </div>
     </Link>
+
+        <Link to='/automatizacije' className='reset-link'>
+    <div className="sidebar-link">
+        Automatizacije
+    </div>
+    </Link>
 </div>
 
 
