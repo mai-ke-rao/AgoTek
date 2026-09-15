@@ -53,6 +53,10 @@ Add header Content-Type : appication/json
 Go back to the AgoTek App, in "Uredjaji" section choose "Dodaju uredjaj" Choose Chripstack integrarion.
 Paste the DEV_EUI and Api key and name your device
 
+### 3. Automation
+Automation (rules engine). The IoT service now includes a rules engine that turns incoming sensor readings into device downlinks. Rules live in PostgreSQL alongside the existing MongoDB telemetry, on purpose: a rule is a normalised structure (rule → ordered clauses → one action → audit trail) with real foreign keys and cascades, which is what a relational store is for, while device readings stay in Mongo's schemaless Bucket collection. The schema is defined once in Drizzle ORM and the API's request validation is derived from it with drizzle-zod, so the database and the Zod schemas cannot drift apart. Condition evaluation is a pure, side-effect-free module with no I/O and no throwing, which keeps the one piece of code that decides whether to actuate hardware exhaustively unit-tested (33 evaluator cases); missing or non-numeric values evaluate to false rather than vacuously true, and a rule with no clauses never fires. The firing loop is called from the TTN webhook without await and wraps every rule in its own error boundary, so a malformed rule, a Mongo hiccup or a failing device can never delay or endanger the webhook's 200 acknowledgement to TTN.
+ The whole path is covered by three test layers under Playwright: pure evaluator tests, engine tests against a real Postgres with a mock TTN server, and rules API tests for ownership and validation.
+
 
 refrences: 
 [1] https://www.psss.rs/wp-content/uploads/2021/10/knjiga.polja_.pdf   "Knjiga polja" (Field books)
