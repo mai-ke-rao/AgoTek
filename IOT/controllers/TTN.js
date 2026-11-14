@@ -133,10 +133,10 @@ TTNRouter.get('/device_list', tokenExtractor, userExtractor, async(request, resp
 
 
 TTNRouter.get('/device_data/:dev_id/:page', tokenExtractor, userExtractor, async(request, response) => {
-  try {
-    var dev = await Device.find({dev_id: request.params.dev_id, user: request.user.id.toString()})
-  } catch(error) {
-    console.error("device not found")
+  // find() returns [] rather than throwing, so the old try/catch never
+  // rejected anything: any user could read any dev_id's telemetry.
+  const dev = await Device.findOne({ dev_id: request.params.dev_id, user: request.user.id.toString() })
+  if (!dev) {
     return response.status(403).json({ error: 'device not found' });
   }
 

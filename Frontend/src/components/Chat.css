@@ -36,7 +36,8 @@
 }
 
 .chat-box {
-  width: 320px;
+  width: 380px;
+  max-width: calc(100vw - 2rem);
   border-radius: 10px;
   overflow: hidden;
   box-shadow: 0 6px 24px rgba(0, 0, 0, 0.18);
@@ -72,7 +73,7 @@
 
 .chat-messages {
   flex: 1;
-  height: 300px;
+  height: min(460px, calc(100vh - 12rem));
   overflow-y: auto;
   padding: 0.75rem 1rem;
   display: flex;
@@ -132,3 +133,192 @@
   background-color: var(--button-hower-dark-hoarse-green);
 }
 
+
+/* ---- assistant ---- */
+
+.chat-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.chat-lang {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  border-radius: 4px;
+  padding: 0.1rem 0.4rem;
+  font-size: 0.75rem;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.chat-message--assistant {
+  align-self: flex-start;
+  background-color: white;
+  color: var(--fond-biljaka-letters);
+  border: 1px solid var(--sublime-gray);
+  border-bottom-left-radius: 4px;
+  max-width: 92%;
+}
+
+.chat-message--assistant p {
+  margin: 0 0 0.45rem;
+}
+
+.chat-message--assistant p:last-child {
+  margin-bottom: 0;
+}
+
+.chat-message--assistant ul {
+  margin: 0 0 0.45rem;
+  padding-left: 1.1rem;
+}
+
+.chat-md-heading {
+  font-weight: bold;
+}
+
+.chat-message--error {
+  border-color: #d9534f;
+  color: #a94442;
+}
+
+.chat-thinking {
+  color: var(--gray-letters);
+  font-style: italic;
+}
+
+.chat-chip {
+  display: inline-block;
+  border: none;
+  border-radius: 10px;
+  padding: 0 0.4rem;
+  margin: 0 0.1rem;
+  font-size: 0.7rem;
+  font-weight: bold;
+  line-height: 1.4;
+  vertical-align: 0.1em;
+  cursor: pointer;
+  color: white;
+  background-color: var(--hoarse-green);
+}
+
+.chat-chip--D {
+  background-color: var(--logo-yellow);
+}
+
+.chat-citation,
+.chat-proposal {
+  margin-top: 0.5rem;
+  padding: 0.5rem 0.6rem;
+  border-radius: 8px;
+  background-color: var(--graysh-background);
+  font-size: 0.82rem;
+}
+
+.chat-citation-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.4rem;
+}
+
+.chat-citation-head strong {
+  flex: 1;
+}
+
+.chat-citation-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--gray-letters);
+}
+
+.chat-citation-meta {
+  color: var(--gray-letters);
+  margin-top: 0.15rem;
+}
+
+.chat-citation blockquote {
+  margin: 0.4rem 0;
+  padding-left: 0.5rem;
+  border-left: 3px solid var(--sublime-gray);
+  white-space: pre-wrap;
+}
+
+.chat-citation a {
+  color: var(--hoarse-green);
+  font-weight: bold;
+}
+
+.chat-missing {
+  margin-top: 0.4rem;
+  font-size: 0.8rem;
+  color: var(--gray-letters);
+}
+
+.chat-proposal {
+  border: 1px solid var(--logo-yellow);
+}
+
+.chat-proposal-title {
+  font-weight: bold;
+  margin-bottom: 0.25rem;
+}
+
+.chat-proposal-summary {
+  font-family: monospace;
+  font-size: 0.78rem;
+  word-break: break-word;
+}
+
+.chat-proposal-warning {
+  margin-top: 0.3rem;
+  color: #8a6d3b;
+}
+
+.chat-proposal-done {
+  margin-top: 0.4rem;
+}
+
+.chat-proposal-done a {
+  color: var(--hoarse-green);
+  font-weight: bold;
+}
+
+.chat-proposal-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.chat-proposal-actions button {
+  border: none;
+  border-radius: 4px;
+  padding: 0.3rem 0.8rem;
+  cursor: pointer;
+  font-size: 0.82rem;
+}
+
+.chat-proposal-confirm {
+  background-color: var(--hoarse-green);
+  color: white;
+}
+
+.chat-proposal-reject {
+  background-color: var(--sublime-gray);
+  color: var(--fond-biljaka-letters);
+}
+
+.chat-proposal-actions button:disabled,
+.chat-send:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+@media (max-width: 480px) {
+  .chat-wrapper {
+    right: 1rem;
+    bottom: 1rem;
+  }
+}

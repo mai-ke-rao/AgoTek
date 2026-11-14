@@ -1,6 +1,8 @@
 services:
   postgres:
-    image: postgres:16-alpine
+    # pgvector build of Postgres 16 (same data format as postgres:16), needed
+    # by Backend's assistant (vector column + HNSW index).
+    image: pgvector/pgvector:pg16
     restart: unless-stopped
     environment:
       POSTGRES_USER: agotek

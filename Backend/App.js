@@ -9,6 +9,9 @@ const parcelsRouter = require('./controllers/parcels')
 const usersRouter = require('./controllers/users')
 const loginRouter = require('./controllers/login')
 const activitesRouter = require('./controllers/activities')
+const assistantRouter = require('./assistant/controller')
+const assistantConfig = require('./assistant/config')
+const fs = require('fs')
 
 mongoose.set('strictQuery', false)
 
@@ -32,5 +35,12 @@ app.use(middleware.requestLogger)
 app.use(middleware.tokenExtractor)
 app.use('/api/activities', activitesRouter)
 app.use('/api/parcels', parcelsRouter)
+app.use('/api/assistant', assistantRouter)
+
+// The manuals, so citation chips can open the PDF at the cited page. Only
+// mounted when the corpus folder is deployed alongside Backend.
+if (fs.existsSync(assistantConfig.CORPUS_DIR)) {
+  app.use('/manuals', express.static(assistantConfig.CORPUS_DIR, { index: false, extensions: false }))
+}
 
 module.exports = { app, server }

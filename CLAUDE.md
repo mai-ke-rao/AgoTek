@@ -61,6 +61,17 @@ npm start      # production
 - `Chirpdev` (Chirpstack) — similar to Device
 - `Bucket` — time-series sensor readings (name, value, date_time, dev_id)
 
+## Assistant (`Backend/assistant/`)
+
+Chat assistant (circle bottom-right, `Frontend/src/components/Chat.jsx`, logged-in users) that answers from the farming manuals (RAG, pgvector, `[Sn]` citations) and the user's own data via tools (`[Dn]` citations), and proposes automation rules the user must confirm. Full design and the deviations from the original spec: `files/ASSISTANT_SPEC.md`.
+
+- Routes: `POST /api/assistant/ask`, `POST /api/assistant/proposals/:id/confirm|reject`, `GET /api/assistant/status` (all JWT).
+- Extra env: `DATABASE_URL` (IOT's Postgres, needs pgvector), `GEMINI_API_KEY`, `GEMINI_MODEL`, `IOT_URL`, `RAG_TOP_K`, `RAG_MIN_SIMILARITY`, `EMBEDDING_MODEL` (see `Backend/.env.example`). Without `DATABASE_URL`/`GEMINI_API_KEY` the assistant routes return 503; the rest of Backend is unaffected.
+- Trust boundary: user id only from the JWT; every query in `assistant/dataAccess.js` is user-scoped; retrieval filters `owner_user_id` in the vector-search SQL; rules are only *proposed* (stored in `assistant_rule_proposals`) and created on confirm through IOT's `POST /api/rules` with `enabled: false`.
+- Grounding: `validateCitations.js` drops untagged paragraphs, `doseGuard.js` blocks quantities not in the cited source, `pesticideKeywords.js` adds the disclaimer. All pure and unit-tested.
+- Commands (from `Backend/`): `npm test` (unit, Gemini mocked), `npm run test:integration` (real Postgres + model), `npm run db:migrate`, `npm run model:download` (Render build step), `npm run ingest -- ../Agricultural_resources` (local only), `npm run eval` (by hand; tunes `RAG_MIN_SIMILARITY`).
+- Assistant tables (`documents`, `chunks`, `rag_query_log`, `assistant_rule_proposals`) are migrated by Backend (`assistant/migrations`, tracked in `assistant_migrations`), not by IOT's Drizzle; `IOT/drizzle.config.ts` filters them out.
+
 ## IOT Microservice
 
 As of the `extract IoT/realtime into standalone microservice` commit, TTN/Chirpstack webhook handling and Socket.IO live entirely in `IOT/`, separate from `Backend/`. This split lets `Backend/` run serverless while `IOT/` runs as a long-lived process (Socket.IO needs persistent connections).
@@ -95,7 +106,7 @@ npm start      # production
 **Known gaps (relevant when testing):**
 - IOT has no `.env` in this checkout and no `node_modules` installed yet.
 - The Chirpstack webhook handler is a stub (logs body, returns 200 — no persist/emit), so TTN is the only fully wired live-data path.
-- The extraction left dead files behind in `Backend/`: `controllers/TTN.js`, `controllers/Chirpstack.js`, `controllers/socketController.js`, `models/device.js`, `models/chripdev.js`, `models/bucket.js`, `utils/cryptoHelper.js`. None are imported by `Backend/App.js` anymore — the live versions are in `IOT/`. Don't point tests at Backend for anything device/socket-related.
+- The extraction left dead files behind in `Backend/`: `controllers/TTN.js`, `controllers/Chirpstack.js`, `controllers/socketController.js`, `utils/cryptoHelper.js`. None are imported by `Backend/App.js` anymore — the live versions are in `IOT/`. Don't point tests at Backend for anything device/socket-related. Exception: `models/device.js`, `models/chripdev.js`, `models/bucket.js` are used again, read-only, by the assistant (same Mongo collections IOT writes).
 
 ## Frontend
 

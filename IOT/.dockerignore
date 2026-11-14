@@ -1,5 +1,8 @@
 /.git
 /node_modules
+/dist
+/test-results
+/tests
 .dockerignore
 .env
 Dockerfile

@@ -6,3 +6,4 @@ import config from "../../utils/config.js";
 const pool = new Pool({ connectionString: config.DATABASE_URL });
 
 export const db = drizzle(pool, { schema });
+    

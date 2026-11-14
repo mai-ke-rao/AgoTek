@@ -19,6 +19,7 @@ import DeviceMenu from './components/DeviceMenu'
 import Integrations from './components/Integrations'
 import Registracija from './components/Registracija'
 import Rules from './components/Rules'
+import Chat from './components/Chat'
 
 
 
@@ -76,6 +77,8 @@ const App = () => {
                   <Route path="/automatizacije" element={<Rules/>}/>
                   <Route path="/registracija" element={<Registracija/>}/>
                 </Routes>
+                {/* Assistant: logged-in users only; inside Router for citation links */}
+                {user && <Chat/>}
           
                 
               </Router>

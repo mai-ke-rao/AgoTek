@@ -14,3 +14,5 @@ npm-debug.log*
 
 client.REST
 request_example.png
+# embedding model downloaded by `npm run model:download`
+.model-cache/

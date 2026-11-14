@@ -110,7 +110,8 @@ activitiesRouter.put("/:actId", userExtractor, async (req, res, nest) => {
 
   console.log("request je ", req.body);
   
-  const updatedDoc = await Base.findByIdAndUpdate( req.params.actId,
+  // Scoped to the caller: an id alone must not let one user edit another's log.
+  const updatedDoc = await Base.findOneAndUpdate({ _id: req.params.actId, user: req.user.id },
   { $set: req.body },
   {
     new: true,          // return updated document
@@ -133,7 +134,7 @@ res.status(200).json(updatedDoc);
 
 activitiesRouter.delete("/:actId", userExtractor, async (req, res, next) => {
 
-const deletedDoc = await Base.findByIdAndDelete(req.params.actId)
+const deletedDoc = await Base.findOneAndDelete({ _id: req.params.actId, user: req.user.id })
 if (!deletedDoc) {
   return res.status(404).json({ error: 'Not found' });
 }
