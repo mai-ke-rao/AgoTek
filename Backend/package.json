@@ -32,7 +32,6 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@huggingface/transformers": "^3.0.0",
     "pdfjs-dist": "^4.10.38"
   }
 }

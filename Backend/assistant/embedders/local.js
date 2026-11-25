@@ -13,7 +13,16 @@ let extractorPromise = null
 function loadExtractor() {
   if (!extractorPromise) {
     extractorPromise = (async () => {
-      const { pipeline, env } = await import('@huggingface/transformers')
+      // Not in package.json on purpose: its install script downloads native
+      // onnxruntime binaries (and fails on Render). Install it by hand for
+      // offline work: npm install --no-save @huggingface/transformers@3
+      let transformers
+      try {
+        transformers = await import('@huggingface/transformers')
+      } catch {
+        throw new Error('EMBEDDING_PROVIDER=local needs @huggingface/transformers: run "npm install --no-save @huggingface/transformers@3" in Backend/')
+      }
+      const { pipeline, env } = transformers
       env.cacheDir = config.MODEL_CACHE_DIR
       return pipeline('feature-extraction', config.EMBEDDING_MODEL, { dtype: config.EMBEDDING_DTYPE })
     })()
