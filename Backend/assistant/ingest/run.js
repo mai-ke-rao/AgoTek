@@ -3,11 +3,12 @@ const path = require('path')
 const crypto = require('crypto')
 const config = require('../config')
 const db = require('../db')
-const { migrate } = require('../migrate')
+const { migrate, ensureVectorDim } = require('../migrate')
 const { embedPassages, countTokens } = require('../embeddings')
 const { extractPages } = require('./pdf')
 const { cleanPages } = require('./clean')
 const { chunkBlocks } = require('./chunk')
+const { toSearchText } = require('../text')
 
 // Idempotent corpus ingestion (run locally, never on Render):
 //   - documents are upserted by source_key (the file name)
@@ -71,21 +72,21 @@ async function ingestFile(file, { meta, owner, log }) {
   const toEmbed = rows.filter((r) => !current.has(r.hash))
   for (let i = 0; i < toEmbed.length; i += BATCH) {
     const batch = toEmbed.slice(i, i + BATCH)
-    const vectors = await embedPassages(batch.map((r) => r.content))
+    const vectors = await embedPassages(batch.map((r) => r.content), { log })
     await db.withTransaction(async (client) => {
       for (let j = 0; j < batch.length; j++) {
         const r = batch[j]
         await client.query(
           `INSERT INTO chunks (document_id, owner_user_id, chunk_index, page_start, page_end, content,
-                              content_hash, embedding, embedding_model)
-           VALUES ($1, $2, $3, $4, $5, $6, $7, $8::vector, $9)
+                              content_hash, embedding, embedding_model, search_text)
+           VALUES ($1, $2, $3, $4, $5, $6, $7, $8::vector, $9, $10)
            ON CONFLICT (content_hash) DO UPDATE SET
              document_id = EXCLUDED.document_id, owner_user_id = EXCLUDED.owner_user_id,
              chunk_index = EXCLUDED.chunk_index, page_start = EXCLUDED.page_start,
              page_end = EXCLUDED.page_end, embedding = EXCLUDED.embedding,
-             embedding_model = EXCLUDED.embedding_model`,
+             embedding_model = EXCLUDED.embedding_model, search_text = EXCLUDED.search_text`,
           [documentId, owner, r.index, r.pageStart, r.pageEnd, r.content, r.hash,
-            db.toVectorLiteral(vectors[j]), config.EMBEDDING_MODEL]
+            db.toVectorLiteral(vectors[j]), config.EMBEDDING_MODEL, toSearchText(r.content)]
         )
       }
     })
@@ -104,6 +105,17 @@ async function ingestFile(file, { meta, owner, log }) {
     }
   })
 
+  // Chunks embedded before the keyword index existed (migration 002).
+  const missing = await db.query('SELECT id, content FROM chunks WHERE document_id = $1 AND search_text IS NULL', [documentId])
+  if (missing.rows.length) {
+    await db.withTransaction(async (client) => {
+      for (const r of missing.rows) {
+        await client.query('UPDATE chunks SET search_text = $2 WHERE id = $1', [r.id, toSearchText(r.content)])
+      }
+    })
+    log(`  keyword index filled for ${missing.rows.length} existing chunks`)
+  }
+
   const stale = await db.query(
     'DELETE FROM chunks WHERE document_id = $1 AND NOT (content_hash = ANY($2::text[]))',
     [documentId, rows.map((r) => r.hash)]
@@ -114,6 +126,7 @@ async function ingestFile(file, { meta, owner, log }) {
 
 async function ingestDirectory({ dir = config.CORPUS_DIR, owner = null, only = null, log = console.log } = {}) {
   await migrate({ log })
+  await ensureVectorDim({ deleteChunks: true, log })
   const manifest = readManifest(dir)
   const files = fs.readdirSync(dir)
     .filter((f) => f.toLowerCase().endsWith('.pdf'))

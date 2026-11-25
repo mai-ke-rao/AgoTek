@@ -9,6 +9,25 @@ const PAGE_NUMBER = /^[\s\-–—|]*\d{1,4}[\s\-–—|]*$/
 const NUMBERED_HEADING = /^\d+(\.\d+)*\.?\s+\S/
 const LIST_START = /^(?:[-–•*]|\d{1,2}[.)]|[a-zа-я][.)])\s+/i
 const TERMINAL = /[.!?:;…"»”]$/ // not ")": headings like "4.1.1. Азот (N)"
+// Table-of-contents / index lines: "Kada treba navodnjavati? ........ 152".
+// They list every topic of a book, so as chunks they outrank real passages.
+const TOC_LINE = /(?:\.\s?){5,}|…{3,}|(?:_\s?){5,}/
+// References sections: also topic-dense, and the English titles win English
+// questions. Dropped from the heading until the next heading or real prose.
+const REFERENCES_HEADING = /^\s*(?:\d+(?:\.\d+)*\.?\s*)?(?:цитирана\s+|korišćena\s+|коришћена\s+)?(?:литература|literatura|references|bibliography|библиографија|bibliografija|извори|izvori)(?!\p{L})/iu // not \b: ASCII-only even with /u
+const YEAR = /\b(?:19|20)\d{2}[a-z]?\b/
+// "3. Anderson, K.K., …", "Al-Karaki, G.N. 2017.", "Петровић, М. (2010)"
+const CITATION_START = /^\s*(?:\[?\d{1,3}[.\])]\s*)?\p{Lu}[\p{L}'’-]+,?\s+(?:\p{Lu}\.\s?-?){1,3}/u
+
+// "Манојловић, М., Белић, М." anywhere: two-column reference lists extract
+// as blocks that start mid-entry, so the start alone is not enough. The
+// initials must be followed by , ; ( & or a year, so species names
+// ("Typhimurium, S. Enteritidis, S. Bovismorbificans") don't count.
+const AUTHOR = /\p{Lu}[\p{L}'’-]+,\s+(?:\p{Lu}\.\s?-?){1,3}(?=\s*(?:[,;(&]|(?:19|20)\d{2}))/gu
+const authorCount = (text) => (text.match(AUTHOR) || []).length
+
+const isCitation = (text) => (CITATION_START.test(text) && YEAR.test(text)) || authorCount(text) >= 2
+const isProse = (text) => text.length > 250 && !YEAR.test(text) && !CITATION_START.test(text) && authorCount(text) === 0
 
 const collapse = (s) => s.replace(/\s+/g, ' ').trim()
 const edgeKey = (s) => collapse(s).toLowerCase().replace(/\d+/g, '#')
@@ -48,7 +67,8 @@ function median(values) {
 function pageBlocks(page, repeated) {
   const lines = page.lines
     .map((l, i) => ({ ...l, text: collapse(l.text), edge: i < EDGE_LINES || i >= page.lines.length - EDGE_LINES }))
-    .filter((l) => l.text && !(l.edge && (repeated.has(edgeKey(l.text)) || PAGE_NUMBER.test(l.text))))
+    .filter((l) => l.text && !TOC_LINE.test(l.text) &&
+      !(l.edge && (repeated.has(edgeKey(l.text)) || PAGE_NUMBER.test(l.text))))
 
   const gaps = []
   for (let i = 1; i < lines.length; i++) {
@@ -107,7 +127,42 @@ function cleanPages(pages) {
       }
     }
   }
-  return blocks.map((b) => ({ text: b.text, page: b.page, pageEnd: b.pageEnd || b.page, heading: b.heading }))
+  return dropReferences(blocks)
+    .map((b) => ({ text: b.text, page: b.page, pageEnd: b.pageEnd || b.page, heading: b.heading }))
 }
 
-module.exports = { cleanPages, isHeading, joinLines, repeatedEdgeKeys }
+function dropReferences(blocks) {
+  const isRef = markReferences(blocks)
+  // A page that is mostly references goes whole: two-column bibliographies
+  // leave line fragments ("highbush blueberry. HortTechnology, 25(4)…")
+  // that no per-block rule recognizes.
+  const total = new Map()
+  const refs = new Map()
+  blocks.forEach((b, i) => {
+    total.set(b.page, (total.get(b.page) || 0) + b.text.length)
+    if (isRef[i]) refs.set(b.page, (refs.get(b.page) || 0) + b.text.length)
+  })
+  const refPage = (p) => (refs.get(p) || 0) >= 0.5 * total.get(p)
+  return blocks.filter((b, i) => !isRef[i] && !refPage(b.page))
+}
+
+function markReferences(blocks) {
+  const marks = []
+  let inReferences = false
+  for (const b of blocks) {
+    // The heading word alone ("Литература", "5. LITERATURA:"), or merged with
+    // the first entry ("Литература Al-Karaki, G.N. 2017. …"); never a heading
+    // that merely starts with it ("3.4. Izvori finansiranja").
+    const rest = REFERENCES_HEADING.test(b.text) ? b.text.replace(REFERENCES_HEADING, '').trim() : null
+    if (rest !== null && (/^[:.]?$/.test(rest) || isCitation(rest))) {
+      inReferences = true
+      marks.push(true)
+      continue
+    }
+    if (inReferences && (b.heading || isProse(b.text))) inReferences = false
+    marks.push(inReferences || isCitation(b.text))
+  }
+  return marks
+}
+
+module.exports = { cleanPages, isHeading, joinLines, repeatedEdgeKeys, isCitation }

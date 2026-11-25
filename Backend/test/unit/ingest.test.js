@@ -23,6 +23,33 @@ test('repeated headers/footers and page numbers are dropped', () => {
   assert.equal(blocks.length, 5)
 })
 
+test('table-of-contents lines and references sections are dropped, real sections kept', () => {
+  const prose = 'Фертигација вишегодишњих засада углавном се врши наводњавањем кап по кап, ' +
+    'које укључује убризгавање ђубрива у систем за наводњавање, тако да се хранљиве материје ' +
+    'доводе директно у зону кореновог система, у мањим и чешћим дозама током вегетације.'
+  const blocks = cleanPages([
+    page(1, ['Kada i kako voćnjak treba navodnjavati? .................... 60', 'Šta je fertigacija? ..... 61']),
+    page(2, [prose]),
+    page(3, ['ЛИТЕРАТУРА', '1. Anderson, K.K., Grant, J. (2006). Guide to efficient nitrogen fertilizer use.',
+      'Петровић, М., Јовић, Н. 2010. Ђубрење воћака. Нови Сад.']),
+    page(4, ['7. ПРИМЕНА ЂУБРИВА ПУТЕМ ФЕРТИГАЦИЈЕ', prose]),
+    page(5, ['3.4. Izvori finansiranja', 'Sredstva za podizanje zasada mogu se obezbediti kreditom.']),
+  ])
+  const texts = blocks.map((b) => b.text)
+  assert.ok(!texts.some((t) => t.includes('....')), 'TOC lines dropped')
+  assert.ok(!texts.some((t) => /Anderson|Петровић|ЛИТЕРАТУРА/.test(t)), 'references dropped')
+  assert.ok(texts.includes('7. ПРИМЕНА ЂУБРИВА ПУТЕМ ФЕРТИГАЦИЈЕ'), 'next chapter kept')
+  assert.equal(texts.filter((t) => t === prose).length, 2)
+  assert.ok(texts.includes('3.4. Izvori finansiranja'), '"Izvori ..." heading is not a references heading')
+  assert.ok(texts.some((t) => t.startsWith('Sredstva za podizanje')))
+})
+
+test('mid-entry reference blocks are dropped; species names are not citations', () => {
+  const { isCitation } = require('../../assistant/ingest/clean')
+  assert.ok(isCitation('nitrogen use. Манојловић, М., Белић, М., Нешић, Љ. (2014). Ђубрење. Нови Сад.'))
+  assert.equal(isCitation('Сојеви Salmonella Typhimurium, S. Enteritidis, S. Bovismorbificans показали су осетљивост.'), false)
+})
+
 test('words hyphenated at line breaks are joined; real hyphens kept', () => {
   assert.equal(joinLines('primena đubri-', 'va u zasadu'), 'primena đubriva u zasadu')
   assert.equal(joinLines('odnos N-', 'P-K'), 'odnos N- P-K')

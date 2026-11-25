@@ -61,8 +61,11 @@ function historyToContents(history) {
   return out
 }
 
-function firstUserTurn(question, preTags, registry) {
-  const context = preTags.length
+function firstUserTurn(question, preTags, registry, manualsUnavailable = false) {
+  const context = manualsUnavailable
+    ? 'The manual search is temporarily unavailable. Answer only the part about their own data, using the data tools; ' +
+      'list anything that would need the manuals in "missing".'
+    : preTags.length
     ? `Manual passages retrieved for this question (cite as [Sn]):\n\n${preTags.map((t) => registry.formatChunk(t)).join('\n\n')}`
     : 'No manual passage passed the relevance threshold for this question (search_manuals: sufficient:false). ' +
       "If it is about the user's own data, use the data tools; otherwise answer with status \"insufficient\"."
@@ -108,11 +111,18 @@ async function ask({ userId, question, history = [], lang }, overrides = {}) {
 
   try {
     // 1. Retrieve and gate.
-    let pre = { sufficient: false, chunks: [], topSimilarity: null }
+    // A retrieval failure (embedding API or database down) is an error, not
+    // "nothing found": it must not come back as "not in my sources".
+    // Exception: when only the embedding quota is exhausted, a question about
+    // the user's own data can still be answered from the data tools.
+    let pre
+    let manualsUnavailable = false
     try {
       pre = await deps.retrieve(ctx.userId, question)
     } catch (err) {
-      console.error('assistant retrieval failed:', err.message)
+      if (!(isRateLimitError(err) && hasDataIntent(question))) throw err
+      manualsUnavailable = true
+      pre = { sufficient: false, chunks: [], topSimilarity: null }
     }
     ctx.trackSimilarity(pre.topSimilarity)
     const preTags = pre.chunks.map((c) => registry.addChunk(c))
@@ -126,8 +136,9 @@ async function ask({ userId, question, history = [], lang }, overrides = {}) {
     const systemInstruction = buildSystemPrompt({
       lang, pesticideFlag: flag.flagged, today: new Date(deps.now()).toISOString().slice(0, 10),
     })
-    const contents = [...historyToContents(history), firstUserTurn(question, preTags, registry)]
+    const contents = [...historyToContents(history), firstUserTurn(question, preTags, registry, manualsUnavailable)]
     let finalArgs = null
+    const session = {} // gemini.generate pins the model here (fallback stays for the whole question)
 
     for (let step = 0; step < config.MAX_AGENT_STEPS; step++) {
       const lastStep = step === config.MAX_AGENT_STEPS - 1
@@ -136,6 +147,7 @@ async function ask({ userId, question, history = [], lang }, overrides = {}) {
         contents,
         functionDeclarations: declarations,
         allowedFunctionNames: lastStep ? ['final_answer'] : undefined,
+        session,
       })
       contents.push(res.content)
 

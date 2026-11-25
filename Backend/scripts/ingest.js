@@ -24,7 +24,9 @@ ingestDirectory(parseArgs(process.argv.slice(2)))
     console.log(`done in ${Math.round((Date.now() - started) / 1000)} s: ${results.length} documents, ${total} chunks, ${embedded} newly embedded`)
   })
   .catch((err) => {
-    console.error('ingest failed:', err)
+    // Expected on the free tier with a large corpus: not a crash, just "continue tomorrow".
+    if (err && err.name === 'EmbeddingDailyQuotaError') console.error(`ingest paused: ${err.message}`)
+    else console.error('ingest failed:', err)
     process.exitCode = 1
   })
   .finally(() => db.close())

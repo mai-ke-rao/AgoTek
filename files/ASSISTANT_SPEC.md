@@ -35,9 +35,9 @@ The model sits outside it.
 | Concern | Decision |
 |---|---|
 | Where | `Backend/assistant/` (Render). Reads Mongo directly; reads Postgres (shared with IOT) directly; writes rules only through IOT's API. |
-| Embeddings | `Xenova/multilingual-e5-small`, transformers.js (`@huggingface/transformers` v3), `dtype: q8`, mean pooling, normalized, `query:` / `passage:` prefixes, 384 dims. **Both sides transliterated Cyrillic → Latin before embedding.** Loaded once at startup; cached in `Backend/.model-cache` by `npm run model:download` at build time. |
+| Embeddings | `EMBEDDING_PROVIDER=gemini` (default): `gemini-embedding-001` through the Gemini API, 768 dims (`outputDimensionality`), `RETRIEVAL_QUERY` / `RETRIEVAL_DOCUMENT` task types, normalized; nothing loaded in the process (Backend ~90 MB RSS). `EMBEDDING_PROVIDER=local`: `Xenova/multilingual-e5-small` via transformers.js (`dtype: q8`, 384 dims, ~500 MB RSS; a devDependency, for offline work). **Both sides transliterated Cyrillic → Latin before embedding.** Question embeddings are cached in memory. |
 | Vector store | pgvector, cosine, HNSW (`vector_cosine_ops`). |
-| LLM | Gemini via `@google/genai`, `GEMINI_MODEL` env. Function calling in `ANY` mode; the final answer is a `final_answer` call whose parameter schema is the structured-output contract, parsed with Zod. |
+| LLM | Gemini via `@google/genai`: `GEMINI_MODEL`, then `GEMINI_FALLBACK_MODELS` in order. Function calling in `ANY` mode; the final answer is a `final_answer` call whose parameter schema is the structured-output contract, parsed with Zod. |
 | Tests | `node:test` (no new test deps). Unit tests mock Gemini, retrieval, Mongo, Postgres. |
 
 ## 4. Answer pipeline (`assistant/agent.js`)
@@ -112,7 +112,7 @@ Metadata (title, publisher, year, language, optional public URL) comes from `Agr
 | Table | Columns |
 |---|---|
 | documents | id, source_key (unique), title, source_url, language, publisher, year, owner_user_id, page_count, created_at |
-| chunks | id, document_id (FK cascade), owner_user_id, chunk_index, page_start, page_end, content, content_hash (unique), embedding vector(384), embedding_model, created_at — HNSW cosine index |
+| chunks | id, document_id (FK cascade), owner_user_id, chunk_index, page_start, page_end, content, content_hash (unique), embedding vector(`EMBEDDING_DIM`; 384 in migration 001, resized by ingest), embedding_model, search_text + generated search_tsv (GIN), created_at — HNSW cosine index |
 | rag_query_log | id, created_at, question, lang, top_similarity, chunks_used, path (short_circuit\|answered\|partial\|insufficient\|error), pesticide_flag, removed_paragraphs, removed_doses, latency_ms, gemini_error, tools_used |
 | assistant_rule_proposals | id (uuid), user_id, rule (IOT body), summary, warnings, status, rule_id, error, created_at, expires_at, decided_at |
 
@@ -125,7 +125,8 @@ disabled with the reason logged (routes 503). Model swap = truncate `chunks`, re
 answerable / 10 out-of-corpus / 10 pesticide, Serbian (Latin and Cyrillic) and
 English mixed — and prints pass rate per group and the top-similarity
 distribution of answerable vs out-of-corpus questions. Set
-`RAG_MIN_SIMILARITY` between the two distributions; 0.80 is only the start.
+`RAG_MIN_SIMILARITY` between the two distributions; the per-provider default
+(gemini 0.62, local 0.80) is only the start.
 Questions logged as `short_circuit`/`insufficient` are the shopping list for
 the next PDFs.
 
@@ -165,6 +166,12 @@ recorded as the baseline.
 12. **Per-user retrieval filter** (`owner_user_id`) added so private documents can be ingested (`--owner`) without leaking.
 13. **Page numbers are PDF page indices**, not printed page numbers, so `#page=N` links open the right page.
 14. **Migrations**: the assistant tables share IOT's Postgres but use their own migration table; IOT's `drizzle.config.ts` now scopes drizzle-kit to the automation tables; local compose uses `pgvector/pgvector:pg16`.
+15. **Tables of contents and references sections are not indexed** (found on the first real ingest). TOC pages (dot-leader lines, e.g. Mozgalice's 30-page question list) and bibliographies list every topic of a book, so as chunks they outranked the real passage for most questions, and English reference titles won every English question. `ingest/clean.js` drops dot-leader lines, everything from a references heading (*Литература*, *Literatura*, *References*…, the word alone) to the next heading or prose, blocks that look like citation entries (two or more "Surname, X." authors), and pages that are mostly references (two-column bibliographies leave fragments).
+16. **Hybrid retrieval** (found on the first real ingest). With e5-small, a rare decisive term is diluted by the generic words around it: the fertigation chapter ranked 12th by vector alone for "Kako se izvodi fertigacija u voćnjaku?". A keyword index (`chunks.search_tsv` over the text folded to ASCII Latin, migration 002) is ranked by IDF over prefix terms and fused with the vector ranking (reciprocal rank fusion). The similarity gate is unchanged: only chunks whose *vector* similarity passes `RAG_MIN_SIMILARITY` are returned. The prompt tells the model to re-search in Serbian for English questions.
+17. **Gemini resilience** (found on the first live calls). `gemini-2.5-flash` is no longer available to new keys. Each call has a deadline (`GEMINI_TIMEOUT_MS`, 30 s). Models are tried in order (`GEMINI_MODEL`, then `GEMINI_FALLBACK_MODELS`): overload gets one retry, then overload/timeout/quota move to the next model; a model that failed is skipped for a while (2 min, or the quota's own retry delay); if every model is only over a per-minute limit, the shortest wait (≤ 20 s) is waited out. The model that answered is tried first for the rest of the question (thought signatures are model-specific).
+18. **Embeddings through the Gemini API instead of e5-small in-process.** Measured: the quantized e5-small costs ~470–530 MB RSS in Backend, which does not fit a 512 MB Render instance. `gemini-embedding-001` costs no memory, and separates relevant from irrelevant far better on this corpus (≈0.73 / 0.57 / 0.40 for relevant / same-domain / unrelated, where e5 gave 0.85–0.88 for everything). The local model stays as `EMBEDDING_PROVIDER=local`. `chunks.embedding` is resized by `npm run ingest` when `EMBEDDING_DIM` changes (startup only resizes an empty table).
+19. **Free-tier limits are part of the design** (measured Nov 2026): embeddings 30,000 tokens/min and 1,000 texts/day (so the first ingest of ~2,900 chunks takes three days; it stops with "ingest paused" and resumes where it stopped; every question costs one); `gemini-3.5-flash` 5 requests/min and 20/day; `gemini-3.7/3.8-flash` refuse free traffic; flash-lite models have separate, larger quotas, hence the default chain `gemini-3.5-flash` → `gemini-3.5-flash-lite` → `gemini-3.1-flash-lite`. When only the embedding quota is exhausted, questions about the user's own data are still answered from the data tools.
+20. **A failed retrieval is an error, not "not in my sources".** With embedding as a network call, treating a failure as "nothing found" would give a wrong, confident-sounding refusal; it now answers 503 (429 on quota).
 
 Found while mapping and fixed: `GET /api/TTN/device_data/:dev_id/:page` (IOT)
 never rejected foreign devices (`find()` returns `[]`, not an error), and

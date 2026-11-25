@@ -20,7 +20,7 @@ const declarations = [
     description: 'Semantic search over the farming manuals (Serbian, mostly Cyrillic: fertilization, orchards, fertigation, organic farming, tillage, crop rotation, general agriculture Q&A). Returns passages tagged [Sn] that pass the relevance threshold, or sufficient:false when the manuals do not cover the query.',
     parameters: {
       type: 'OBJECT',
-      properties: { query: { type: 'STRING', description: 'Short, specific search query in Serbian or English.' } },
+      properties: { query: { type: 'STRING', description: 'Short, specific search query, preferably in Serbian (the manuals are Serbian; Latin script is fine).' } },
       required: ['query'],
     },
   },

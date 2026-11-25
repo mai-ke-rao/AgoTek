@@ -57,9 +57,9 @@ test("another user's private document is never retrieved", { skip }, async () =>
      ON CONFLICT (source_key) DO UPDATE SET owner_user_id = 'owner-a' RETURNING id`
   )
   await db.query(
-    `INSERT INTO chunks (document_id, owner_user_id, chunk_index, page_start, page_end, content, content_hash, embedding, embedding_model)
-     VALUES ($1, 'owner-a', 0, 1, 1, $2, 'private-test-hash', $3::vector, $4) ON CONFLICT (content_hash) DO NOTHING`,
-    [doc.id, text, db.toVectorLiteral(vector), config.EMBEDDING_MODEL]
+    `INSERT INTO chunks (document_id, owner_user_id, chunk_index, page_start, page_end, content, content_hash, embedding, embedding_model, search_text)
+     VALUES ($1, 'owner-a', 0, 1, 1, $2, 'private-test-hash', $3::vector, $4, $5) ON CONFLICT (content_hash) DO NOTHING`,
+    [doc.id, text, db.toVectorLiteral(vector), config.EMBEDDING_MODEL, require('../../assistant/text').toSearchText(text)]
   )
   try {
     const mine = await retrieve('owner-a', 'plan navodnjavanja Severna livada', { minSimilarity: 0 })

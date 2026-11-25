@@ -44,4 +44,13 @@ async function close() {
   }
 }
 
-module.exports = { getPool, query, withTransaction, toVectorLiteral, close }
+// Dimension of the chunks.embedding column (pgvector stores it as the typmod).
+async function embeddingColumnDim() {
+  const { rows } = await query(
+    "SELECT atttypmod AS dim FROM pg_attribute WHERE attrelid = 'chunks'::regclass AND attname = 'embedding'"
+  )
+  return rows.length ? Number(rows[0].dim) : null
+}
+
+module.exports = {
+  embeddingColumnDim, getPool, query, withTransaction, toVectorLiteral, close }

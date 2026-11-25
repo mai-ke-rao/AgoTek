@@ -38,8 +38,14 @@ async function runInit() {
     console.warn('assistant: no manual chunks yet — run `npm run ingest`. Manual questions will be answered "not in my sources".')
   }
 
-  // Load once, at startup, and prove the output shape.
-  await require('./embeddings').embedQuery('warm-up')
+  // Resizes an empty table's vector column; never deletes chunks at startup.
+  if (!(await require('./migrate').ensureVectorDim())) {
+    throw new Error(`chunks.embedding does not have EMBEDDING_DIM (${config.EMBEDDING_DIM}) dims. Re-run \`npm run ingest\`.`)
+  }
+
+  // The in-process model is loaded once, at startup. The API provider has
+  // nothing to load, and a busy API at boot must not disable the assistant.
+  if (config.EMBEDDING_PROVIDER === 'local') await require('./embeddings').embedQuery('warm-up')
 }
 
 function init() {

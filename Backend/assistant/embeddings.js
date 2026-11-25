@@ -1,52 +1,23 @@
 const config = require('./config')
-const { toEmbeddingText } = require('./text')
 
-// Xenova/multilingual-e5-small via transformers.js, quantized (q8) weights.
-// Loaded once per process and shared. e5 needs "query: " / "passage: "
-// prefixes, mean pooling and normalized vectors; both sides are transliterated
-// to Latin script (toEmbeddingText) so Cyrillic manuals match Latin questions.
+// Embedding provider switch (EMBEDDING_PROVIDER): 'gemini' (API, default) or
+// 'local' (transformers.js e5-small in-process, ~500 MB of RAM). Vectors from
+// different models are not comparable: every chunk stores its embedding_model
+// and startup refuses to search a corpus embedded with another one.
 
-let extractorPromise = null
-
-function loadExtractor() {
-  if (!extractorPromise) {
-    extractorPromise = (async () => {
-      const { pipeline, env } = await import('@huggingface/transformers')
-      env.cacheDir = config.MODEL_CACHE_DIR
-      return pipeline('feature-extraction', config.EMBEDDING_MODEL, { dtype: config.EMBEDDING_DTYPE })
-    })()
-    extractorPromise.catch(() => { extractorPromise = null }) // allow a retry
-  }
-  return extractorPromise
+const PROVIDERS = {
+  gemini: () => require('./embedders/gemini'),
+  local: () => require('./embedders/local'),
 }
 
-async function embed(texts, prefix) {
-  const extractor = await loadExtractor()
-  const inputs = texts.map((t) => prefix + toEmbeddingText(t))
-  const output = await extractor(inputs, { pooling: 'mean', normalize: true })
-  const vectors = output.tolist()
-  for (const v of vectors) {
-    if (v.length !== config.EMBEDDING_DIM) {
-      throw new Error(`embedding has ${v.length} dims, expected ${config.EMBEDDING_DIM}`)
-    }
-  }
-  return vectors
+function provider() {
+  const load = PROVIDERS[config.EMBEDDING_PROVIDER]
+  if (!load) throw new Error(`unknown EMBEDDING_PROVIDER "${config.EMBEDDING_PROVIDER}" (use gemini or local)`)
+  return load()
 }
 
-async function embedQuery(text) {
-  const [vector] = await embed([text], 'query: ')
-  return vector
+module.exports = {
+  embedQuery: (text) => provider().embedQuery(text),
+  embedPassages: (texts, options) => provider().embedPassages(texts, options),
+  countTokens: (text) => provider().countTokens(text),
 }
-
-function embedPassages(texts) {
-  return embed(texts, 'passage: ')
-}
-
-// Real tokenizer count (XLM-R sentencepiece), used by the chunker so chunks
-// stay under e5's 512-token truncation.
-async function countTokens(text) {
-  const extractor = await loadExtractor()
-  return extractor.tokenizer.encode('passage: ' + toEmbeddingText(text)).length
-}
-
-module.exports = { loadExtractor, embedQuery, embedPassages, countTokens }

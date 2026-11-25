@@ -58,6 +58,31 @@ test('out-of-corpus question returns insufficient and Gemini is never called', a
   assert.equal(d.logs[0].topSimilarity, 0.71)
 })
 
+test('a failed retrieval is an error (503/429), never "not in my sources"', async () => {
+  const d = deps()
+  d.overrides.retrieve = async () => { throw new Error('embedding API down') }
+  const r = await ask({ userId: 'u1', question: 'Šta je fertigacija?' }, d.overrides)
+  assert.equal(r.httpStatus, 503)
+  assert.equal(r.body.message, MESSAGES.sr.unavailable)
+  assert.equal(d.gemini.calls.length, 0)
+
+  d.overrides.retrieve = async () => { throw Object.assign(new Error('quota'), { name: 'GeminiRateLimitError' }) }
+  const limited = await ask({ userId: 'u1', question: 'Šta je fertigacija?' }, d.overrides)
+  assert.equal(limited.httpStatus, 429)
+})
+
+test('embedding quota exhausted: a question about their own data is still answered from tools', async () => {
+  const d = deps({
+    replies: [toolCall('list_parcels', {}), final({ status: 'answered', answer: 'Imate jednu parcelu: Severna livada [D1].' })],
+    access: { listParcels: async () => [{ id: 'p1', name: 'Severna livada' }] },
+  })
+  d.overrides.retrieve = async () => { throw Object.assign(new Error('quota'), { name: 'GeminiRateLimitError' }) }
+  const r = await ask({ userId: 'u1', question: 'Koje su moje parcele?' }, d.overrides)
+  assert.equal(r.httpStatus, 200)
+  assert.equal(r.body.status, 'answered')
+  assert.match(d.gemini.calls[0].contents.at(-1).parts[0].text, /manual search is temporarily unavailable/)
+})
+
 test('[S9] with only 5 sources sent is removed and its paragraph dropped', async () => {
   const d = deps({
     replies: [final({ status: 'answered', answer: 'Fertigacija se primenjuje u voćnjacima [S1].\n\nIzmišljena tvrdnja [S9].' })],
